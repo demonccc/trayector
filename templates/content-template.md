@@ -1,5 +1,3 @@
-# [Content Title]
-
 ---
 classification: [User-defined classification key]
 status: [draft / published / archived]
@@ -11,6 +9,8 @@ publications:
 related_content:
   - [Optional local content bundle path or external URL]
 ---
+
+# [Content Title]
 
 [Canonical content lives here. Publish or adapt it to external channels as needed.]
 
