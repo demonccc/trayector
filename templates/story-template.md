@@ -1,5 +1,3 @@
-# [Story Title]
-
 ---
 id: [Stable story ID] [e.g., moving-from-qa-to-platform-engineering]
 type: story
@@ -10,6 +8,8 @@ related:
   projects: []
   deep_dives: []
 ---
+
+# [Story Title]
 
 ## Context
 [What period, transition, recurring pattern or cross-cutting experience this story is about]
