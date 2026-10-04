@@ -18,7 +18,7 @@ A Trayector profile may contain the following entities:
 - **Deep Dive** — detailed technical or organizational case study.
 - **Project** — personal, open-source, lab, research or other project work.
 - **Story** — cross-cutting career narrative that does not belong to one job.
-- **Content** — posts, articles, talks and other published professional ideas.
+- **Content** — professional writing, talks, notes and other intellectual output, without imposing a universal content taxonomy.
 
 ## Required principles
 
@@ -32,6 +32,7 @@ Implementations MUST preserve these semantics:
 6. Machine-readable metadata SHOULD use stable identifiers where relationships are required.
 7. Profiles MAY omit sections that are not relevant to the person.
 8. Metadata SHOULD NOT duplicate information that can be derived reliably from the file path.
+9. Trayector SHOULD define structure and semantics without imposing personal taxonomies that can be owned by the profile author.
 
 ## Document format
 
@@ -61,38 +62,91 @@ related:
 
 The prose below the front matter describes context, contribution, decisions, evidence and outcomes.
 
-## Content naming and language variants
+## Profile-owned vocabulary
 
-Content files SHOULD encode date and language in the filename when those values can be derived reliably:
+A profile MAY define human-readable vocabularies in `settings.yaml`. These vocabularies are intentionally owner-controlled rather than hard-coded into Trayector.
+
+Example:
+
+```yaml
+languages:
+  esp: Español
+  eng: English
+  br: Português do Brasil
+
+classifications:
+  linkedin-post: Publicación profesional en LinkedIn
+  article: Artículo largo o de profundidad
+  technical-note: Nota técnica enfocada en un tema concreto
+```
+
+Keys MAY be renamed, removed or extended by the profile owner. Consumers SHOULD resolve the meaning of a key by reading `settings.yaml` rather than assuming a fixed external taxonomy.
+
+A vocabulary entry SHOULD prefer a direct key-to-meaning mapping when that is sufficient. Wrapper fields such as `label` SHOULD NOT be required when they add no useful semantics.
+
+## Content items
+
+All content items SHOULD use the same structural convention regardless of classification:
 
 ```text
-<date>-<slug>.<lang>.md
+content/
+└── <date>-<slug>/
+    ├── content.<language-code>.md
+    └── assets/
+        └── [optional files]
 ```
+
+A content item without local assets simply omits `assets/`.
+
+The bundle directory identifies the content item. The date is derived from the directory name. The language key is derived from the Markdown filename and SHOULD resolve through `settings.yaml`.
 
 Example:
 
 ```text
-2026-10-04-what-a-cv-does-not-show.es.md
-2026-10-04-what-a-cv-does-not-show.en.md
+content/
+└── 2026-05-22-t-shape-ia-square-shape/
+    ├── content.esp.md
+    └── assets/
+        └── square-shape-seniority.jpg
 ```
 
-Files that share the same date and slug but differ by language suffix represent language variants of the same work. Implementations SHOULD NOT require redundant `date`, `language`, `work_id` or `translation_of` metadata solely to express this relationship.
-
-## Content bundles and assets
-
-When visual, downloadable or other local assets are part of the meaning of a content item, the content SHOULD be stored as a bundle:
+Language variants of the same item live in the same directory:
 
 ```text
-content/articles/
+content/
 └── 2026-05-29-ai-engineering/
-    ├── article.es.md
-    ├── article.en.md
+    ├── content.esp.md
+    ├── content.eng.md
     └── assets/
         ├── architecture.webp
         └── model-strategies.webp
 ```
 
-Assets SHOULD be referenced directly from the Markdown so their placement and semantic role remain part of the canonical content:
+Implementations SHOULD NOT require redundant `date`, `language`, `work_id` or `translation_of` metadata solely to express information already present in the path.
+
+## Content classification and publication
+
+Content classification is profile-owned metadata, not directory structure.
+
+Example:
+
+```yaml
+---
+classification: linkedin-post
+status: published
+publications:
+  - channel: linkedin
+    url: https://example.com/post
+---
+```
+
+The publishing platform does not determine the content item's structure. A piece classified as `article`, `linkedin-post`, `technical-note` or any other owner-defined value uses the same bundle convention.
+
+When linking one content item to another, implementations SHOULD prefer the content bundle directory rather than a specific language variant unless the relationship is explicitly language-specific.
+
+## Content assets
+
+Assets SHOULD be referenced directly from Markdown so their placement and semantic role remain part of the canonical content:
 
 ```markdown
 ![Architecture overview](assets/architecture.webp)
