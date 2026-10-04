@@ -1,0 +1,18 @@
+{
+  "trayector_version": "0.1",
+  "profile": {
+    "name": "Alex Example",
+    "headline": "Engineering Manager and distributed-systems practitioner",
+    "location": "Remote"
+  },
+  "navigation": {
+    "summary": "profile/summary.md",
+    "timeline": "profile/career-timeline.md",
+    "capabilities": "profile/capabilities.md",
+    "experience": "experience/",
+    "deep_dives": "deep-dives/",
+    "projects": "projects/",
+    "stories": "stories/",
+    "content": "content/"
+  }
+}
