@@ -38,6 +38,8 @@ Implementations MUST preserve these semantics:
 
 Trayector documents use Markdown. Structured metadata SHOULD be represented with YAML front matter where relationships, classification or indexing are useful.
 
+When YAML front matter is used, it MUST be the first block in the Markdown file so standard front-matter parsers can read it without Trayector-specific logic.
+
 Example:
 
 ```yaml
@@ -45,7 +47,6 @@ Example:
 id: exp-acme-engineering-manager
 type: experience
 organization: acme
-seniority: manager
 period:
   from: 2024-01
   to: 2026-03
@@ -61,6 +62,8 @@ related:
 ```
 
 The prose below the front matter describes context, contribution, decisions, evidence and outcomes.
+
+Metadata fields are optional unless a specific schema says otherwise. Do not add fields such as `seniority` merely to fill a template when the source does not establish them or the role already carries the useful meaning.
 
 ## Profile-owned vocabulary
 
