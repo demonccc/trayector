@@ -87,17 +87,24 @@ Example:
 
 ## 5. Document experience, not just employment
 
-Create one experience document for a coherent role/seniority period.
+Create one experience document for a coherent employment or professional-engagement period.
 
-If you were promoted, changed scope substantially, or moved from IC to management inside the same company, use separate documents.
+An experience may include role progression when the organizational context remains continuous. Split it when there are genuinely separate employment periods, clearly different engagements, or a scope change that benefits from its own independent context. Do not create extra documents solely because a title changed.
 
-Example:
+Both of these can be valid:
+
+```text
+experience/
+└── acme.md
+```
+
+or, when separate contexts are useful:
 
 ```text
 experience/
 └── acme/
-    ├── senior-engineer.md
-    └── engineering-manager.md
+    ├── platform-engineering.md
+    └── consulting-engagement.md
 ```
 
 Use [`../templates/experience-template.md`](../templates/experience-template.md).
@@ -150,9 +157,9 @@ A capability may be demonstrated by work experience, personal projects, labs, pu
 An experience document should remain navigable. If an initiative needs architecture diagrams, failure modes, constraints and detailed trade-offs, create a deep dive and link to it.
 
 ```text
-experience/acme/engineering-manager.md
-                 │
-                 └── ../../deep-dives/realtime-data-platform.md
+experience/acme.md
+        │
+        └── ../deep-dives/realtime-data-platform.md
 ```
 
 Use [`../templates/case-study-template.md`](../templates/case-study-template.md).
@@ -208,7 +215,7 @@ content/
 
 The directory carries the date and slug. The filename carries the language key defined in `settings.yaml`. Do not repeat information in metadata when it can be derived reliably from the path.
 
-Classification belongs in front matter and resolves through `settings.yaml`:
+Classification belongs in YAML front matter and resolves through `settings.yaml`. Front matter is the first block in the Markdown file so standard parsers can read it directly:
 
 ```yaml
 ---
