@@ -1,5 +1,3 @@
-# [System / Initiative]
-
 ---
 id: [Stable deep-dive ID] [e.g., realtime-data-platform]
 type: deep-dive
@@ -9,6 +7,8 @@ role: [Your role] [e.g., Engineering Manager / Lead Architect]
 capabilities:
   - [Capability ID]
 ---
+
+# [System / Initiative]
 
 ## Problem Statement & Baseline
 [What was broken, constrained, slow, risky or missing]
