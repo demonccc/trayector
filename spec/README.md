@@ -31,6 +31,7 @@ Implementations MUST preserve these semantics:
 5. Markdown content SHOULD remain understandable without specialized tooling.
 6. Machine-readable metadata SHOULD use stable identifiers where relationships are required.
 7. Profiles MAY omit sections that are not relevant to the person.
+8. Metadata SHOULD NOT duplicate information that can be derived reliably from the file path.
 
 ## Document format
 
@@ -59,6 +60,45 @@ related:
 ```
 
 The prose below the front matter describes context, contribution, decisions, evidence and outcomes.
+
+## Content naming and language variants
+
+Content files SHOULD encode date and language in the filename when those values can be derived reliably:
+
+```text
+<date>-<slug>.<lang>.md
+```
+
+Example:
+
+```text
+2026-10-04-what-a-cv-does-not-show.es.md
+2026-10-04-what-a-cv-does-not-show.en.md
+```
+
+Files that share the same date and slug but differ by language suffix represent language variants of the same work. Implementations SHOULD NOT require redundant `date`, `language`, `work_id` or `translation_of` metadata solely to express this relationship.
+
+## Content bundles and assets
+
+When visual, downloadable or other local assets are part of the meaning of a content item, the content SHOULD be stored as a bundle:
+
+```text
+content/articles/
+└── 2026-05-29-ai-engineering/
+    ├── article.es.md
+    ├── article.en.md
+    └── assets/
+        ├── architecture.webp
+        └── model-strategies.webp
+```
+
+Assets SHOULD be referenced directly from the Markdown so their placement and semantic role remain part of the canonical content:
+
+```markdown
+![Architecture overview](assets/architecture.webp)
+```
+
+Shared assets SHOULD NOT be duplicated across language variants unless the asset itself is localized. Implementations SHOULD use meaningful alternative text for accessibility and machine interpretation.
 
 ## Contribution model
 
