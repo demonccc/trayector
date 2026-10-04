@@ -6,6 +6,7 @@
     "location": "Remote"
   },
   "navigation": {
+    "settings": "settings.yaml",
     "summary": "profile/summary.md",
     "timeline": "profile/career-timeline.md",
     "capabilities": "profile/capabilities.md",
