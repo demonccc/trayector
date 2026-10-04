@@ -156,9 +156,30 @@ Use [`../templates/project-template.md`](../templates/project-template.md).
 
 You can store the canonical version of posts, articles and talks under `content/` and publish them to LinkedIn, Medium, a blog or elsewhere.
 
+For simple standalone content, use:
+
 ```text
-content/posts/platform-engineering-is-a-product.md
+content/posts/2026-10-04-what-a-cv-does-not-show.es.md
+content/posts/2026-10-04-what-a-cv-does-not-show.en.md
 ```
+
+The filename encodes the date, work slug and language. Do not repeat those values in metadata when they can be derived reliably from the path.
+
+Files with the same date and slug are language variants of the same work.
+
+When content has meaningful visual or downloadable assets, use a content bundle:
+
+```text
+content/articles/
+└── 2026-05-29-ai-engineering/
+    ├── article.es.md
+    ├── article.en.md
+    └── assets/
+        ├── architecture.webp
+        └── model-strategies.webp
+```
+
+Assets belong to the content when they carry part of its meaning. Reference them directly from Markdown with useful alt text. Shared assets can be reused by every language variant.
 
 The platform is a channel. Your repository remains the source of truth.
 
