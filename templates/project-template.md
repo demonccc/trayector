@@ -1,5 +1,3 @@
-# [Project Name]
-
 ---
 id: [Stable project ID] [e.g., home-kubernetes-lab]
 type: project
@@ -9,6 +7,8 @@ status: [active / completed / archived]
 capabilities:
   - [Capability ID]
 ---
+
+# [Project Name]
 
 ## Overview & Motivation
 [Why this project exists and what you wanted to learn, solve or build]
