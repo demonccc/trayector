@@ -1,9 +1,9 @@
-# [Profile Name]
-
 ---
 id: [Stable profile ID] [e.g., alex-example]
 type: profile
 ---
+
+# [Profile Name]
 
 ## Summary
 [Short professional summary focused on what you do, know and can demonstrate]
