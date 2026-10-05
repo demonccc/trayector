@@ -32,7 +32,7 @@ When working on this profile:
 
 Updates are intentionally **manual and review-driven**.
 
-The repository owner chooses when to run the Trayector update workflow.
+The repository owner chooses when to run the Trayector update workflow. There is no scheduled update.
 
 The workflow compares three states:
 
@@ -46,7 +46,7 @@ If both the local profile and Trayector changed the same instruction in incompat
 
 Trayector updates MUST NOT silently overwrite profile-specific customizations.
 
-## Managed contents
+## Profile Kit contents
 
 Typical Profile Kit files include:
 
