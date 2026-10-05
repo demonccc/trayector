@@ -1,12 +1,14 @@
 {
   "trayector_version": "0.1",
+  "trayector": {
+    "settings": ".trayector/settings/"
+  },
   "profile": {
     "name": "Alex Example",
     "headline": "Engineering Manager and distributed-systems practitioner",
     "location": "Remote"
   },
   "navigation": {
-    "settings": "settings.yaml",
     "summary": "profile/summary.md",
     "timeline": "profile/career-timeline.md",
     "capabilities": "profile/capabilities.md",
