@@ -16,8 +16,6 @@ Traditional résumés are optimized for summarization. That is useful, but lossy
 
 A title can tell someone where you worked and roughly what your role was. It cannot reliably tell them what you actually know or what you actually did.
 
-An Engineering Manager may have designed a large-scale data architecture. A QA Lead may have built an internal platform. A developer may have learned more about distributed systems through a personal lab than through a formal job assignment.
-
 Trayector treats the job title as **context**, not as proof of capability.
 
 Its central idea is:
@@ -63,7 +61,7 @@ A Trayector profile can carry a local Profile Kit under `.trayector/`.
 
 This gives an AI enough in-repository guidance to understand the profile, navigate canonical career knowledge, build the README, and generate tailored résumés and PDFs without relying on prior chat context.
 
-The Profile Kit starts from Trayector defaults but **may be customized by the profile owner**. Local templates and instructions are part of the profile configuration and are not disposable generated files.
+The Profile Kit starts from Trayector defaults but **may be customized by the profile owner**. Local templates, settings and instructions are part of the profile configuration and are not disposable generated files.
 
 Updates are manual and PR-based. When the owner chooses to update, Trayector compares the previously accepted release derived from `.trayector/VERSION`, the current local `.trayector/` customizations, and the selected new release. Non-conflicting changes can merge automatically; incompatible changes are surfaced for human resolution instead of overwriting local work.
 
@@ -121,12 +119,14 @@ my-career/
 ├── README.md
 ├── TRAYECTOR.md
 ├── profile.json
-├── settings.yaml
 ├── .trayector/
 │   ├── README.md
 │   ├── profile-rules.md
 │   ├── resume-generation.md
 │   ├── VERSION
+│   ├── settings/
+│   │   ├── languages.yaml
+│   │   └── classifications.yaml
 │   └── resume/
 ├── .github/
 │   └── workflows/
@@ -145,7 +145,7 @@ The recommended workflow is:
 
 1. collect source material such as CVs, LinkedIn data, project notes and repositories;
 2. install the local Trayector Profile Kit;
-3. create `profile.json` and profile-owned vocabulary;
+3. create `profile.json` and configure profile-owned vocabulary under `.trayector/settings/`;
 4. reconstruct canonical career knowledge from the sources;
 5. resolve contradictions instead of silently guessing;
 6. connect capabilities to real evidence;
