@@ -115,7 +115,23 @@ A profile MAY include a small `TRAYECTOR.md` file that explains which Trayector 
 
 This keeps implementation details out of the public-facing profile index while preserving explicit compatibility information.
 
-## Suggested AI instruction
+## 9. Generate tailored résumés from the profile
+
+Once the canonical profile exists, an AI can also generate application-specific résumés without rewriting the career itself.
+
+For each tailored résumé, the AI SHOULD read:
+
+1. the target job description;
+2. the candidate's `profile.json` and relevant canonical profile documents;
+3. the selected résumé template, such as `templates/resume/basic.md`.
+
+The AI MAY select, reorder, summarize and emphasize supported information according to the role.
+
+It MUST NOT add unsupported experience simply because the job description contains a matching keyword.
+
+See [`tailored-resumes.md`](tailored-resumes.md) for the detailed generation workflow and validation rules.
+
+## Suggested AI instruction for profile creation
 
 ```text
 Build a Career as Code profile using Trayector.
@@ -139,10 +155,26 @@ Do not force every source item into the final profile. Exclude irrelevant noise 
 Create the canonical profile areas first. Build README.md last as a concise index and presentation view derived from the canonical profile.
 ```
 
+## Suggested AI instruction for a tailored résumé
+
+```text
+Create a tailored résumé for the job description I provide.
+
+Use my Trayector profile as the only source of professional facts. Start at profile.json and read the relevant canonical profile documents.
+
+Use the selected résumé template as presentation guidance.
+
+Analyze the target role first, then select, prioritize and summarize the parts of my real experience that best match it.
+
+Do not invent or infer unsupported dates, titles, seniority, technologies, metrics, certifications, leadership scope, ownership, outcomes or capabilities.
+
+If the job asks for something my profile does not support, do not add it.
+```
+
 ## Validation mindset
 
-A good AI-assisted Trayector profile should satisfy three tests:
+A good AI-assisted Trayector profile or derived view should satisfy three tests:
 
-1. **Human-readable:** a person can understand the career by browsing the repository.
+1. **Human-readable:** a person can understand the career or résumé without special tooling.
 2. **Machine-readable:** an AI or tool can traverse the structure and relationships without guessing the schema.
-3. **Source-faithful:** claims are no stronger than the available evidence.
+3. **Source-faithful:** claims are no stronger than the available canonical evidence.
