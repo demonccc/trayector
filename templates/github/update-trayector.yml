@@ -3,8 +3,8 @@ name: Update Trayector Profile Kit
 on:
   workflow_dispatch:
     inputs:
-      trayector_ref:
-        description: "Trayector release tag to update from (for example v0.2.0)"
+      trayector_version:
+        description: "Trayector version to update to (for example 0.2.0)"
         required: true
         type: string
 
@@ -30,7 +30,7 @@ jobs:
       - name: Prepare Trayector snapshots
         id: upstream
         env:
-          NEW_REF: ${{ inputs.trayector_ref }}
+          NEW_VERSION: ${{ inputs.trayector_version }}
         shell: bash
         run: |
           set -euo pipefail
@@ -38,44 +38,50 @@ jobs:
           repo=".trayector-repo"
           base_dir=".trayector-update/base"
           new_dir=".trayector-update/new"
+          new_tag="v${NEW_VERSION}"
 
           rm -rf "$repo" .trayector-update
           mkdir -p "$base_dir" "$new_dir"
 
           git clone --filter=blob:none --no-checkout https://github.com/demonccc/trayector.git "$repo"
 
-          if ! git -C "$repo" fetch --depth=1 origin "refs/tags/$NEW_REF:refs/tags/$NEW_REF"; then
-            echo "Trayector release tag '$NEW_REF' was not found." >&2
+          if ! git -C "$repo" fetch --depth=1 origin "refs/tags/$new_tag:refs/tags/$new_tag"; then
+            echo "Trayector release tag '$new_tag' was not found." >&2
             exit 1
           fi
 
-          base_ref=""
-          if [ -f .trayector/REF ]; then
-            base_ref="$(tr -d '[:space:]' < .trayector/REF)"
+          base_version=""
+          if [ -f .trayector/VERSION ]; then
+            base_version="$(tr -d '[:space:]' < .trayector/VERSION)"
           fi
 
-          if [ -n "$base_ref" ]; then
-            if ! git -C "$repo" fetch --depth=1 origin "refs/tags/$base_ref:refs/tags/$base_ref"; then
-              echo "Current Trayector baseline tag '$base_ref' was not found upstream." >&2
+          if [ -n "$base_version" ]; then
+            base_tag="v${base_version}"
+            if ! git -C "$repo" fetch --depth=1 origin "refs/tags/$base_tag:refs/tags/$base_tag"; then
+              echo "Current Trayector baseline tag '$base_tag' was not found upstream." >&2
               exit 1
             fi
-            git -C "$repo" archive "$base_ref" profile-kit | tar -x -C "$base_dir"
+            git -C "$repo" archive "$base_tag" profile-kit | tar -x -C "$base_dir"
           fi
 
-          git -C "$repo" archive "$NEW_REF" profile-kit | tar -x -C "$new_dir"
+          git -C "$repo" archive "$new_tag" profile-kit | tar -x -C "$new_dir"
 
-          version="$(tr -d '[:space:]' < "$new_dir/profile-kit/VERSION")"
+          kit_version="$(tr -d '[:space:]' < "$new_dir/profile-kit/VERSION")"
+          if [ "$kit_version" != "$NEW_VERSION" ]; then
+            echo "Tag '$new_tag' contains Profile Kit VERSION '$kit_version', expected '$NEW_VERSION'." >&2
+            exit 1
+          fi
 
-          echo "base_ref=$base_ref" >> "$GITHUB_OUTPUT"
-          echo "new_ref=$NEW_REF" >> "$GITHUB_OUTPUT"
-          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "base_version=$base_version" >> "$GITHUB_OUTPUT"
+          echo "new_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+          echo "new_tag=$new_tag" >> "$GITHUB_OUTPUT"
 
       - name: Three-way update Profile Kit
         id: merge
         env:
-          BASE_REF: ${{ steps.upstream.outputs.base_ref }}
-          NEW_REF: ${{ steps.upstream.outputs.new_ref }}
-          NEW_VERSION: ${{ steps.upstream.outputs.version }}
+          BASE_VERSION: ${{ steps.upstream.outputs.base_version }}
+          NEW_VERSION: ${{ steps.upstream.outputs.new_version }}
+          NEW_TAG: ${{ steps.upstream.outputs.new_tag }}
         shell: bash
         run: |
           set -euo pipefail
@@ -94,8 +100,8 @@ jobs:
           conflicts=0
           : > /tmp/trayector-conflicts
 
-          if [ -z "$BASE_REF" ]; then
-            printf '%s\n' "No .trayector/REF baseline was found." >> /tmp/trayector-conflicts
+          if [ -z "$BASE_VERSION" ]; then
+            printf '%s\n' "No .trayector/VERSION baseline was found." >> /tmp/trayector-conflicts
             printf '%s\n' "Existing local files will not be overwritten without a known release baseline." >> /tmp/trayector-conflicts
             conflicts=1
           fi
@@ -104,7 +110,7 @@ jobs:
             {
               if [ -d "$base_dir" ]; then find "$base_dir" -type f -printf '%P\n'; fi
               if [ -d "$new_dir" ]; then find "$new_dir" -type f -printf '%P\n'; fi
-            } | sort -u
+            } | grep -v '^VERSION$' | sort -u
           )
 
           for path in "${paths[@]}"; do
@@ -119,7 +125,7 @@ jobs:
 
             mkdir -p "$(dirname "$local")"
 
-            if [ -z "$BASE_REF" ]; then
+            if [ -z "$BASE_VERSION" ]; then
               if [ "$r" -eq 1 ] && [ "$l" -eq 0 ]; then
                 cp "$remote" "$local"
               elif [ "$r" -eq 1 ] && [ "$l" -eq 1 ] && ! cmp -s "$local" "$remote"; then
@@ -143,11 +149,9 @@ jobs:
             fi
 
             if [ "$b" -eq 1 ] && [ "$r" -eq 0 ]; then
-              if [ "$l" -eq 0 ]; then
-                :
-              elif cmp -s "$local" "$base"; then
+              if [ "$l" -eq 1 ] && cmp -s "$local" "$base"; then
                 rm -f "$local"
-              else
+              elif [ "$l" -eq 1 ]; then
                 conflicts=1
                 printf '%s\n' "- \`$path\`: removed upstream but modified locally; local file was preserved." >> /tmp/trayector-conflicts
               fi
@@ -165,18 +169,9 @@ jobs:
                 continue
               fi
 
-              if cmp -s "$local" "$remote"; then
-                continue
-              fi
-
-              if cmp -s "$local" "$base"; then
-                cp "$remote" "$local"
-                continue
-              fi
-
-              if cmp -s "$remote" "$base"; then
-                continue
-              fi
+              if cmp -s "$local" "$remote"; then continue; fi
+              if cmp -s "$local" "$base"; then cp "$remote" "$local"; continue; fi
+              if cmp -s "$remote" "$base"; then continue; fi
 
               merged="$(mktemp)"
               set +e
@@ -196,7 +191,6 @@ jobs:
           done
 
           if [ "$conflicts" -eq 0 ]; then
-            printf '%s\n' "$NEW_REF" > "$local_dir/REF"
             printf '%s\n' "$NEW_VERSION" > "$local_dir/VERSION"
             rm -rf "$review_dir"
             echo "conflicts=false" >> "$GITHUB_OUTPUT"
@@ -206,18 +200,17 @@ jobs:
 
           The local Profile Kit contains customizations that could not be safely reconciled automatically.
 
-          - Previous release: ${BASE_REF:-unknown}
-          - Proposed release: $NEW_REF
-          - Proposed Profile Kit version: $NEW_VERSION
+          - Previous version: ${BASE_VERSION:-unknown}
+          - Proposed version: $NEW_VERSION
+          - Proposed release tag: $NEW_TAG
 
           Local files were preserved. Incoming or conflict candidates are under \`.trayector/.update/incoming/\`.
 
           Resolve each item manually in the actual \`.trayector/\` file. When the update is fully resolved:
 
           1. remove \`.trayector/.update/\`;
-          2. set \`.trayector/REF\` to \`$NEW_REF\`;
-          3. set \`.trayector/VERSION\` to \`$NEW_VERSION\`;
-          4. commit those resolutions to this PR branch.
+          2. set \`.trayector/VERSION\` to \`$NEW_VERSION\`;
+          3. commit those resolutions to this PR branch.
 
           ## Conflicts
 
@@ -243,8 +236,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           HAS_CONFLICTS: ${{ steps.merge.outputs.conflicts }}
-          NEW_REF: ${{ steps.upstream.outputs.new_ref }}
-          NEW_VERSION: ${{ steps.upstream.outputs.version }}
+          NEW_VERSION: ${{ steps.upstream.outputs.new_version }}
+          NEW_TAG: ${{ steps.upstream.outputs.new_tag }}
         shell: bash
         run: |
           set -euo pipefail
@@ -256,15 +249,15 @@ jobs:
 
           git checkout -B "$branch"
           git add .trayector
-          git commit -m "chore: propose Trayector $NEW_REF profile kit update"
+          git commit -m "chore: propose Trayector $NEW_VERSION profile kit update"
 
           git fetch origin "$branch" 2>/dev/null || true
           git push --force-with-lease origin "$branch"
 
           if [ "$HAS_CONFLICTS" = "true" ]; then
-            body="Trayector Profile Kit update to \`$NEW_REF\` ($NEW_VERSION) requires manual conflict resolution. Local customizations were preserved. Review \`.trayector/.update/README.md\`, resolve the affected files in \`.trayector/\`, remove \`.trayector/.update/\`, and update \`.trayector/REF\` and \`.trayector/VERSION\` before merging."
+            body="Trayector Profile Kit update to \`$NEW_VERSION\` (\`$NEW_TAG\`) requires manual conflict resolution. Local customizations were preserved. Review \`.trayector/.update/README.md\`, resolve the affected files, remove \`.trayector/.update/\`, and update \`.trayector/VERSION\` before merging."
           else
-            body="Proposes a three-way update of the local Trayector Profile Kit to release \`$NEW_REF\` ($NEW_VERSION). Local customizations that do not conflict with upstream changes are preserved. Review the diff before merging."
+            body="Proposes a three-way update of the local Trayector Profile Kit to \`$NEW_VERSION\` (\`$NEW_TAG\`). Local customizations that do not conflict with upstream changes are preserved. Review the diff before merging."
           fi
 
           existing="$(gh pr list --head "$branch" --state open --json number --jq '.[0].number // empty')"
@@ -273,8 +266,8 @@ jobs:
             gh pr create \
               --base "${{ github.event.repository.default_branch }}" \
               --head "$branch" \
-              --title "Update Trayector profile instructions to $NEW_REF" \
+              --title "Update Trayector profile instructions to $NEW_VERSION" \
               --body "$body"
           else
-            gh pr edit "$existing" --title "Update Trayector profile instructions to $NEW_REF" --body "$body"
+            gh pr edit "$existing" --title "Update Trayector profile instructions to $NEW_VERSION" --body "$body"
           fi
