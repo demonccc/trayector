@@ -85,7 +85,7 @@ This lets the workflow distinguish:
 - compatible changes on both sides, which can be merged automatically;
 - incompatible changes on both sides, which require human resolution.
 
-When there are changes, the workflow opens or updates a dedicated pull request.
+When there are changes, the workflow opens or updates a dedicated pull request. The PR is the review boundary: an update is never considered accepted until that PR is reviewed and merged.
 
 ## Conflict handling
 
