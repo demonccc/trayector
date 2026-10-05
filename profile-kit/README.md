@@ -1,16 +1,18 @@
 # Trayector Profile Kit
 
-This directory is a **synced copy of Trayector instructions for AI agents and profile tooling**.
+This directory is a **local copy of Trayector guidance for AI agents and profile tooling**.
 
-It belongs inside a Career as Code profile so an AI can understand how to read the repository, update canonical career knowledge, and generate derived views such as README files and tailored résumés without needing to guess the model.
+It belongs inside a Career as Code profile so an AI can understand how to read the repository, update canonical career knowledge, and generate derived views such as README files and tailored résumés without needing prior conversational context.
 
 ## Important
 
-The files in this directory are managed by Trayector.
+The files under `.trayector/` may be customized by the profile owner.
 
-Do not edit them as personal career data. Profile-specific information belongs in the normal profile areas such as `profile/`, `experience/`, `projects/`, `deep-dives/`, `stories/`, `feedback/` and `content/`.
+That means they are not disposable generated files and an update from Trayector MUST NOT replace them blindly.
 
-When the upstream Trayector Profile Kit changes, the repository's update workflow should open a pull request with the new instructions so the change remains reviewable.
+Trayector provides the upstream defaults and evolution path, while each profile may adapt those instructions to its own workflow, preferred résumé templates, presentation rules or additional guidance.
+
+Personal career facts still belong in the canonical profile areas such as `profile/`, `experience/`, `projects/`, `deep-dives/`, `stories/`, `feedback/` and `content/`. `.trayector/` contains instructions about how to interpret and present that knowledge.
 
 ## AI: start here
 
@@ -24,12 +26,37 @@ When working on this profile:
 6. Never invent missing career facts.
 7. Treat README files, tailored résumés and PDFs as derived views.
 8. For a tailored résumé, read `resume-generation.md` and the selected template under `resume/`.
+9. Respect local changes inside `.trayector/`; they are part of this profile's instructions.
+
+## Updating this kit
+
+Updates are intentionally **manual and review-driven**.
+
+The repository owner chooses when to run the Trayector update workflow.
+
+The workflow compares three states:
+
+- the previous Trayector upstream version recorded in `.trayector/UPSTREAM`;
+- the current local `.trayector/` files, including custom changes;
+- the newly selected Trayector upstream version.
+
+Non-conflicting upstream changes can be merged automatically while preserving local modifications.
+
+If both the local profile and Trayector changed the same instruction in incompatible ways, the workflow preserves the local file and opens a pull request containing the incoming candidate and a conflict report. The profile owner reviews and resolves those differences before merging.
+
+Trayector updates MUST NOT silently overwrite profile-specific customizations.
 
 ## Managed contents
+
+Typical Profile Kit files include:
 
 - `profile-rules.md` — how to read and modify the canonical career profile.
 - `resume-generation.md` — how to generate truthful tailored résumés and PDFs.
 - `resume/basic.md` — default résumé presentation template.
 - `VERSION` — Profile Kit version identifier.
+
+A profile may add more files or customize these files locally.
+
+`.trayector/UPSTREAM` is maintained by the update process and records the Trayector commit used as the three-way merge baseline.
 
 Source: https://github.com/demonccc/trayector
