@@ -45,6 +45,30 @@ It is **not** a résumé generator, an ATS optimizer, a LinkedIn replacement, or
 
 Those can all become **views or consumers** of a Trayector profile.
 
+## Canonical knowledge and views
+
+Trayector separates the career model from the way it is presented.
+
+Canonical career knowledge lives in structured profile documents such as experience, projects, capabilities, stories, deep dives, feedback and content.
+
+The repository `README.md` is the default human-facing **profile index**, not the career model itself. It can summarize and link to canonical knowledge, and it can be regenerated when the profile changes.
+
+A profile may also include a small `TRAYECTOR.md` file that identifies the Trayector version and points to the specification without turning the personal README into documentation about Trayector.
+
+See [Profile Views](spec/profile-views.md).
+
+## Local AI instructions
+
+A Trayector profile can carry a local Profile Kit under `.trayector/`.
+
+This gives an AI enough in-repository guidance to understand the profile, navigate canonical career knowledge, build the README, and generate tailored résumés and PDFs without relying on prior chat context.
+
+The Profile Kit starts from Trayector defaults but **may be customized by the profile owner**. Local templates and instructions are part of the profile configuration and are not disposable generated files.
+
+Updates are manual and PR-based. When the owner chooses to update, Trayector compares the previously accepted upstream version, the current local `.trayector/` customizations, and the selected new upstream version. Non-conflicting changes can merge automatically; incompatible changes are surfaced for human resolution instead of overwriting local work.
+
+See [Trayector Profile Kit](docs/profile-kit.md).
+
 ## What can live in a Trayector profile?
 
 Anything that forms part of your career or demonstrates professional knowledge, including:
@@ -58,6 +82,7 @@ Anything that forms part of your career or demonstrates professional knowledge, 
 - lessons learned;
 - professional content and publications;
 - mentoring and leadership work;
+- recommendations and testimonials;
 - demonstrated capabilities and the evidence behind them.
 
 No code is required.
@@ -85,112 +110,66 @@ Outcome
   What happened as a result?
 ```
 
-A simplified relationship can look like this:
-
-```text
-Person
-  ├── held_role ─────────> Engineering Manager
-  ├── demonstrated ──────> Big Data Architecture
-  ├── designed ──────────> Data Platform
-  ├── led ───────────────> Platform Team
-  └── published ─────────> Architecture Content
-                              │
-                              └── evidence / context / outcome
-```
-
 ## How do I use it?
 
-You create **your own career repository**. Trayector defines structural conventions; your repository contains your information and owns personal vocabularies such as content classifications and language keys.
+You create **your own career repository**. Trayector defines structural conventions; your repository contains your information and owns local configuration and vocabularies.
 
 A typical profile looks like this:
 
 ```text
 my-career/
 ├── README.md
+├── TRAYECTOR.md
 ├── profile.json
 ├── settings.yaml
+├── .trayector/
+│   ├── README.md
+│   ├── profile-rules.md
+│   ├── resume-generation.md
+│   ├── VERSION
+│   ├── UPSTREAM
+│   └── resume/
+├── .github/
+│   └── workflows/
+│       └── update-trayector.yml
 ├── profile/
-│   ├── summary.md
-│   ├── career-timeline.md
-│   ├── capabilities.md
-│   └── education.md
 ├── experience/
 ├── deep-dives/
 ├── projects/
 ├── stories/
+├── feedback/
 ├── content/
-│   └── 2026-05-22-example-content/
-│       ├── content.esp.md
-│       └── assets/
 └── generated/
 ```
 
-`settings.yaml` is intentionally simple and readable:
+The recommended workflow is:
 
-```yaml
-languages:
-  esp: Español
-  eng: English
-  br: Português do Brasil
+1. collect source material such as CVs, LinkedIn data, project notes and repositories;
+2. install the local Trayector Profile Kit;
+3. create `profile.json` and profile-owned vocabulary;
+4. reconstruct canonical career knowledge from the sources;
+5. resolve contradictions instead of silently guessing;
+6. connect capabilities to real evidence;
+7. build README and other views from the canonical knowledge;
+8. generate tailored résumés when needed;
+9. update the Profile Kit manually when you choose;
+10. version changes as the career evolves.
 
-classifications:
-  linkedin-post: Publicación profesional en LinkedIn
-  article: Artículo largo o de profundidad
-```
+See [Getting Started](docs/getting-started.md) for the guided flow.
 
-The profile owner may change those keys or add new ones. Trayector does not attempt to hard-code every language or every possible way of classifying professional content.
+If AI will help reconstruct the profile, use [AI-Assisted Profile Creation](docs/ai-assisted-profile.md).
 
-Then:
-
-1. Create a Git repository for your career profile.
-2. Add `profile.json` as the machine-readable entry point.
-3. Define profile-owned vocabulary in `settings.yaml`.
-4. Copy the relevant templates from [`templates/`](templates/).
-5. Document your experience using Markdown plus structured front matter.
-6. Connect capabilities to real evidence instead of relying on titles alone.
-7. Commit changes as your career evolves.
-8. Publish anywhere you want. Your repository remains the source of truth.
-
-See **[Getting Started](docs/getting-started.md)** for a complete example.
+For application-specific CVs, use [Tailored Résumés](docs/tailored-resumes.md).
 
 ## The source-of-truth principle
 
-LinkedIn, Medium, a personal website, a résumé PDF, an ATS profile, or an AI assistant are distribution and presentation channels.
+LinkedIn, Medium, a personal website, a résumé PDF, an ATS profile, an AI assistant, or the repository README itself are presentation or distribution views.
 
 Your professional knowledge should not depend on any of them.
 
 With Trayector, the canonical source stays under your control and can later be rendered, indexed, queried, summarized, or exported.
 
 > **LinkedIn is a channel. Your career profile is the source of truth.**
-
-## Repository structure
-
-This repository contains the Trayector specification and reference material:
-
-```text
-trayector/
-├── README.md
-├── LICENSE
-├── docs/
-│   └── getting-started.md
-├── spec/
-│   ├── README.md
-│   └── principles.md
-├── templates/
-│   ├── settings.yaml
-│   ├── profile-template.md
-│   ├── experience-template.md
-│   ├── case-study-template.md
-│   ├── project-template.md
-│   ├── story-template.md
-│   └── content-template.md
-├── schemas/
-│   └── profile.schema.json
-├── taxonomy/
-│   └── README.md
-└── examples/
-    └── minimal-profile/
-```
 
 ## Design principles
 
@@ -200,6 +179,8 @@ Trayector is built around a few rules:
 - **Contribution must be explicit.** Team achievements and personal contributions are not the same thing.
 - **Career is larger than employment.** Personal projects, research, labs, writing and community work count.
 - **Humans first, machines too.** Markdown remains useful without any special tooling.
+- **Canonical knowledge, derived views.** README, résumés and PDFs present the profile; they are not independent sources of truth.
+- **Local instructions are reviewable configuration.** `.trayector/` can evolve from upstream defaults without losing profile-specific customization.
 - **Structure over imposed taxonomy.** The profile owner controls vocabularies that are personal or contextual.
 - **Do not duplicate derivable information.** Paths and filenames should carry information when they can do so reliably.
 - **Plain data over descriptive wrappers.** Do not add metadata ceremony that contributes no meaning.
@@ -216,18 +197,16 @@ Trayector is currently an early specification (`v0.x`). The information model wi
 The initial focus is deliberately simple:
 
 1. define the model;
-2. make it pleasant to maintain manually;
-3. validate it;
+2. make it pleasant to maintain manually or with AI assistance;
+3. validate it against real careers;
 4. generate indexes and views;
-5. add query and AI tooling later.
+5. add query and automation tooling later.
 
 ## License
 
 Trayector is licensed under the **Apache License 2.0**.
 
 The specification and reference implementation are intentionally open and may be adopted by individuals, companies, platforms and tools under the terms of that license.
-
-The goal is adoption and portability: if a platform wants to support Trayector profiles, it should be able to do so.
 
 See [`LICENSE`](LICENSE).
 
