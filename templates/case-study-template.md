@@ -1,11 +1,10 @@
 ---
-id: [Stable deep-dive ID] [e.g., realtime-data-platform]
+id: deep-dive-example
 type: deep-dive
-context: [Organization or project ID] [e.g., acme]
-timeframe: [Period] [e.g., 2024-2025]
-role: [Your role] [e.g., Engineering Manager / Lead Architect]
-capabilities:
-  - [Capability ID]
+context: example-context
+timeframe: "YYYY-YYYY"
+role: example-role
+capabilities: []
 ---
 
 # [System / Initiative]
@@ -36,6 +35,11 @@ capabilities:
 ## Results
 [Outcomes and metrics only where they can be stated confidently]
 
+## Sources
+
+- [Source document, repository, architecture note, ADR, or public URL]
+- [Additional source]
+
 ## What Worked
 [What proved correct]
 
@@ -43,7 +47,8 @@ capabilities:
 [What failed, aged poorly, or would be redesigned today]
 
 ## Evidence
-[Related documents, code, diagrams, posts, talks, ADRs, or descriptive evidence]
+
+- [Related code, diagram, post, talk, demo, or descriptive evidence]
 
 ## Tech Stack
 [Technologies and tooling actually used]

@@ -12,22 +12,42 @@ That means they are not disposable generated files and an update from Trayector 
 
 Trayector provides the upstream defaults and evolution path, while each profile may adapt those instructions to its own workflow, preferred résumé templates, presentation rules or additional guidance.
 
-Personal career facts still belong in the canonical profile areas such as `profile/`, `experience/`, `projects/`, `deep-dives/`, `stories/`, `feedback/` and `content/`. `.trayector/` contains instructions about how to interpret and present that knowledge.
+Personal career facts still belong in the canonical profile areas such as `profile/`, `experience/`, `projects/`, `deep-dives/`, `stories/`, `feedback/` and `content/`. `.trayector/` contains instructions and profile configuration about how to interpret and present that knowledge.
 
 ## AI: start here
 
 When working on this profile:
 
 1. Read `profile.json` at the repository root.
-2. Read `settings.yaml` when present.
-3. Read this file and `profile-rules.md`.
+2. Read this file and `profile-rules.md`.
+3. Read the configuration files under `.trayector/settings/` when present.
 4. Follow the canonical navigation from `profile.json`.
 5. Treat canonical profile documents as the source of professional truth.
 6. Never invent missing career facts.
 7. Treat README files, tailored résumés and PDFs as derived views.
 8. For a tailored résumé, read `resume-generation.md` and the selected template under `resume/`.
-9. Respect local changes inside `.trayector/`; they are part of this profile's instructions.
+9. Respect local changes inside `.trayector/`; they are part of this profile's instructions and configuration.
 10. Read `.trayector/VERSION` when you need to know which Trayector release this local kit is based on.
+
+## Settings
+
+Profile-owned configuration lives under:
+
+```text
+.trayector/settings/
+```
+
+Each file represents one configuration section instead of putting unrelated settings into one root file.
+
+Typical examples are:
+
+```text
+.trayector/settings/
+├── languages.yaml
+└── classifications.yaml
+```
+
+Profiles may add more settings files when a new configurable area is needed. Do not create configuration files preemptively when there is nothing to configure yet.
 
 ## Version
 
@@ -58,6 +78,7 @@ Typical Profile Kit files include:
 - `profile-rules.md` — how to read and modify the canonical career profile.
 - `resume-generation.md` — how to generate truthful tailored résumés and PDFs.
 - `resume/basic.md` — default résumé presentation template.
+- `settings/` — profile-owned configuration split by concern.
 - `VERSION` — Profile Kit version and release baseline.
 
 A profile may add more files or customize these files locally.

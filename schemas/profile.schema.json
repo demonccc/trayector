@@ -12,7 +12,8 @@
       "type": "object",
       "properties": {
         "instructions": { "type": "string" },
-        "profile_kit_version": { "type": "string" }
+        "profile_kit_version": { "type": "string" },
+        "settings": { "type": "string" }
       },
       "additionalProperties": true
     },
@@ -29,7 +30,6 @@
     "navigation": {
       "type": "object",
       "properties": {
-        "settings": { "type": "string" },
         "summary": { "type": "string" },
         "timeline": { "type": "string" },
         "capabilities": { "type": "string" },

@@ -46,12 +46,15 @@ Implementations MUST preserve these semantics:
 8. Metadata SHOULD NOT duplicate information that can be derived reliably from the file path.
 9. Trayector SHOULD define structure and semantics without imposing personal taxonomies that can be owned by the profile author.
 10. Derived views SHOULD NOT become independent sources of professional truth when canonical knowledge exists elsewhere in the profile.
+11. Human-facing information SHOULD prefer readable Markdown over structured metadata when machine parsing adds little value.
 
 ## Document format
 
-Trayector documents use Markdown. Structured metadata SHOULD be represented with YAML front matter where relationships, classification or indexing are useful.
+Trayector documents use Markdown. Structured metadata SHOULD be represented with YAML front matter only where relationships, classification or indexing benefit from machine-readable structure.
 
 When YAML front matter is used, it MUST be the first block in the Markdown file so standard front-matter parsers can read it without Trayector-specific logic.
+
+Front matter SHOULD remain compact. Long source lists, publication lists, evidence descriptions and explanatory relationships SHOULD normally be expressed as Markdown sections and lists.
 
 Example:
 
@@ -61,8 +64,8 @@ id: exp-acme-engineering-manager
 type: experience
 organization: acme
 period:
-  from: 2024-01
-  to: 2026-03
+  from: "2024-01"
+  to: "2026-03"
 roles:
   - engineering-manager
 capabilities:
@@ -78,27 +81,45 @@ The prose below the front matter describes context, contribution, decisions, evi
 
 Metadata fields are optional unless a specific schema says otherwise. Do not add fields such as `seniority` merely to fill a template when the source does not establish them or the role already carries the useful meaning.
 
-## Profile-owned vocabulary
+## Profile-owned configuration
 
-A profile MAY define human-readable vocabularies in `settings.yaml`. These vocabularies are intentionally owner-controlled rather than hard-coded into Trayector.
+Profile-owned configuration lives under:
 
-Example:
-
-```yaml
-languages:
-  esp: Español
-  eng: English
-  br: Português do Brasil
-
-classifications:
-  linkedin-post: Publicación profesional en LinkedIn
-  article: Artículo largo o de profundidad
-  technical-note: Nota técnica enfocada en un tema concreto
+```text
+.trayector/settings/
 ```
 
-Keys MAY be renamed, removed or extended by the profile owner. Consumers SHOULD resolve the meaning of a key by reading `settings.yaml` rather than assuming a fixed external taxonomy.
+Each YAML file represents one configurable area. Trayector does not require all settings to live in one catch-all file.
+
+Typical examples are:
+
+```text
+.trayector/settings/
+├── languages.yaml
+└── classifications.yaml
+```
+
+`languages.yaml`:
+
+```yaml
+esp: Español
+eng: English
+br: Português do Brasil
+```
+
+`classifications.yaml`:
+
+```yaml
+linkedin-post: Publicación profesional en LinkedIn
+article: Artículo largo o de profundidad
+technical-note: Nota técnica enfocada en un tema concreto
+```
+
+Keys MAY be renamed, removed or extended by the profile owner. Consumers SHOULD resolve the meaning of a key by reading the relevant settings file rather than assuming a fixed external taxonomy.
 
 A vocabulary entry SHOULD prefer a direct key-to-meaning mapping when that is sufficient. Wrapper fields such as `label` SHOULD NOT be required when they add no useful semantics.
+
+Configuration is not canonical career knowledge. It tells tools how to interpret or present that knowledge.
 
 ## Content items
 
@@ -114,7 +135,7 @@ content/
 
 A content item without local assets simply omits `assets/`.
 
-The bundle directory identifies the content item. The date is derived from the directory name. The language key is derived from the Markdown filename and SHOULD resolve through `settings.yaml`.
+The bundle directory identifies the content item. The date is derived from the directory name. The language key is derived from the Markdown filename and SHOULD resolve through `.trayector/settings/languages.yaml`.
 
 Language variants of the same item live in the same directory.
 
@@ -130,11 +151,22 @@ Example:
 ---
 classification: linkedin-post
 status: published
-publications:
-  - channel: linkedin
-    url: https://example.com/post
+topics: []
 ---
 ```
+
+Classification SHOULD resolve through `.trayector/settings/classifications.yaml`.
+
+Publication destinations are usually easier to read and maintain as Markdown:
+
+```markdown
+## Publications
+
+- LinkedIn: https://example.com/post
+- Medium: https://example.com/article
+```
+
+Likewise, sources and related content SHOULD normally use readable Markdown lists unless a concrete machine-processing requirement justifies structured metadata.
 
 The publishing platform does not determine the content item's structure. A piece classified as `article`, `linkedin-post`, `technical-note` or any other owner-defined value uses the same bundle convention.
 
@@ -197,7 +229,7 @@ See [AI-Assisted Profile Creation](../docs/ai-assisted-profile.md).
 
 Trayector is designed to be extensible.
 
-Implementations MAY add metadata fields, document types and taxonomies as long as they do not change the meaning of required fields or break basic human readability.
+Implementations MAY add metadata fields, document types and configuration sections as long as they do not change the meaning of required fields or break basic human readability.
 
 Future versions will formalize compatibility and extension rules as real-world implementations expose the need.
 
@@ -210,6 +242,8 @@ Profiles declare the specification version in `profile.json`:
   "trayector_version": "0.1"
 }
 ```
+
+The local Profile Kit version lives in `.trayector/VERSION`. Released Trayector tags will follow the convention `v<version>`.
 
 The `0.x` series is experimental and may introduce breaking changes.
 

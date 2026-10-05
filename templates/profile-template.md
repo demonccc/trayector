@@ -1,5 +1,5 @@
 ---
-id: [Stable profile ID] [e.g., alex-example]
+id: profile-example
 type: profile
 ---
 
@@ -12,9 +12,9 @@ type: profile
 [What you are currently working on, learning, building or leading]
 
 ## Core Capabilities
-- [Capability] [e.g., Platform Engineering]
-- [Capability] [e.g., Distributed Systems]
-- [Capability] [e.g., Engineering Leadership]
+- [Capability]
+- [Capability]
+- [Capability]
 
 ## Navigation
 - [Career timeline](../profile/career-timeline.md)
@@ -24,3 +24,7 @@ type: profile
 - [Projects](../projects/)
 - [Stories](../stories/)
 - [Content](../content/)
+
+## Sources
+
+- [Source document, public link, or note]
