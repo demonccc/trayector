@@ -1,14 +1,14 @@
 # Trayector Profile Kit
 
-Trayector profiles can carry a managed copy of the instructions an AI or profile tool needs to understand the repository.
+Trayector profiles can carry a local copy of the instructions an AI or profile tool needs to understand the repository.
 
-This managed copy lives at:
+This copy lives at:
 
 ```text
 .trayector/
 ```
 
-The source for those files lives in the Trayector repository under:
+The upstream source for those files lives in the Trayector repository under:
 
 ```text
 profile-kit/
@@ -27,7 +27,7 @@ A repository should be self-describing enough that an agent can:
 - generate a tailored résumé without inventing facts;
 - render a PDF from the reviewed résumé source when its environment supports PDF generation.
 
-`profile.json` can expose the managed instruction entry point:
+`profile.json` can expose the instruction entry point:
 
 ```json
 {
@@ -39,13 +39,20 @@ A repository should be self-describing enough that an agent can:
 }
 ```
 
-## Managed, not personal
+## Local and customizable
 
-`.trayector/` is framework guidance, not career content.
+`.trayector/` is framework guidance, but it belongs to the profile repository once installed.
 
-Profile owners should not customize those files to describe themselves. Personal career truth belongs in the canonical profile areas.
+The profile owner MAY customize it. Examples include:
 
-If project-specific guidance is needed, keep it outside `.trayector/` so upstream updates remain clean and reviewable.
+- adding a preferred résumé template;
+- refining instructions for how an AI should present the profile;
+- adding local conventions for generated artifacts;
+- adapting wording or ordering rules while preserving Trayector semantics.
+
+Those customizations are intentional profile configuration and MUST NOT be discarded by an upstream update.
+
+Career facts themselves still belong in the canonical profile areas, not in `.trayector/`.
 
 ## Keeping the Profile Kit updated
 
@@ -61,26 +68,47 @@ A profile repository installs it as:
 .github/workflows/update-trayector.yml
 ```
 
-The workflow:
+The update is **manual only** through `workflow_dispatch`.
 
-1. checks out the profile repository;
-2. checks out `demonccc/trayector@main`;
-3. copies `profile-kit/` into `.trayector/`;
-4. does nothing when there is no difference;
-5. when instructions changed, pushes a dedicated update branch;
-6. opens a pull request for review.
+The repository owner chooses when to check and propose an update. There is no scheduled background update.
 
-Updates are intentionally PR-based. Trayector guidance should never silently rewrite a person's profile repository.
+The workflow performs a three-way comparison using:
 
-The workflow also supports `workflow_dispatch` so an owner can check for updates manually.
+1. the previously accepted Trayector commit stored in `.trayector/UPSTREAM`;
+2. the current local `.trayector/` files, including any custom modifications;
+3. the newly selected Trayector upstream ref, normally `main`.
+
+This lets the workflow distinguish:
+
+- upstream-only changes, which can be applied safely;
+- local-only changes, which must be preserved;
+- compatible changes on both sides, which can be merged automatically;
+- incompatible changes on both sides, which require human resolution.
+
+When there are changes, the workflow opens or updates a dedicated pull request.
+
+## Conflict handling
+
+The updater MUST NOT solve conflicts by blindly replacing local files.
+
+When the same instruction changed locally and upstream and cannot be merged safely:
+
+- the local file remains untouched;
+- the incoming candidate is written under `.trayector/.update/incoming/`;
+- `.trayector/.update/README.md` explains what needs review;
+- `.trayector/UPSTREAM` is not advanced automatically.
+
+The profile owner resolves the conflict in the pull request, removes `.trayector/.update/`, updates `.trayector/UPSTREAM` to the proposed Trayector commit, and only then merges.
+
+This makes custom instructions first-class and reviewable rather than temporary local deviations.
 
 ## Update boundary
 
-The updater owns only `.trayector/`.
+The updater only proposes changes inside `.trayector/`.
 
 It does not modify canonical career data, generated résumés, README content or other profile files.
 
-This boundary is important: a Trayector framework update can change the instructions an AI follows, but it does not automatically rewrite the person's career.
+This boundary is important: a Trayector framework update can evolve the instructions an AI follows, but it does not automatically rewrite the person's career or presentation.
 
 ## AI bootstrap contract
 
@@ -89,7 +117,8 @@ An AI entering a Trayector profile should:
 1. read `profile.json`;
 2. follow `trayector.instructions` when present;
 3. read `.trayector/README.md` and the referenced rules;
-4. then traverse canonical career knowledge using `profile.json` navigation;
-5. generate or update derived views only after understanding the canonical profile.
+4. treat those local instructions as authoritative for this profile unless they contradict required Trayector semantics;
+5. traverse canonical career knowledge using `profile.json` navigation;
+6. generate or update derived views only after understanding the canonical profile.
 
 This makes the repository itself the handoff between Trayector and whatever AI system is used.
