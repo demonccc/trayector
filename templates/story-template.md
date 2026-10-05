@@ -1,8 +1,7 @@
 ---
-id: [Stable story ID] [e.g., moving-from-qa-to-platform-engineering]
+id: story-example
 type: story
-topics:
-  - [Topic ID]
+topics: []
 related:
   experience: []
   projects: []
@@ -24,4 +23,11 @@ related:
 [Capabilities, judgment, leadership, technical depth, adaptability, etc.]
 
 ## Evidence
-[Related experiences, projects, posts, talks, or other material]
+
+- [Related experience, project, post, talk, or other evidence]
+- [Additional evidence]
+
+## Sources
+
+- [Source document, public link, repository, or note]
+- [Additional source]
