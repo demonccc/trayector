@@ -27,30 +27,25 @@ When working on this profile:
 7. Treat README files, tailored résumés and PDFs as derived views.
 8. For a tailored résumé, read `resume-generation.md` and the selected template under `resume/`.
 9. Respect local changes inside `.trayector/`; they are part of this profile's instructions.
-10. Read `.trayector/VERSION` and `.trayector/REF` when you need to know which Trayector release this local kit is based on.
+10. Read `.trayector/VERSION` when you need to know which Trayector release this local kit is based on.
 
-## Version and release reference
+## Version
 
-An installed Profile Kit carries two small provenance files:
+The installed Profile Kit carries one provenance file:
 
 - `VERSION` — semantic Profile Kit/specification version, such as `0.1.0`.
-- `REF` — immutable Trayector release tag used as the upstream baseline, such as `v0.1.0`.
 
-Trayector uses release tags rather than `main` as update baselines.
+Trayector uses immutable release tags named from that version. By convention, `VERSION` `0.1.0` maps to Trayector tag `v0.1.0`.
+
+A separate release-ref file is unnecessary.
 
 ## Updating this kit
 
 Updates are intentionally **manual and review-driven**.
 
-The repository owner chooses when to run the Trayector update workflow and explicitly selects a target release tag. There is no scheduled update.
+The repository owner chooses when to run the Trayector update workflow and explicitly selects a target version. There is no scheduled update.
 
-The workflow compares three states:
-
-- the previous Trayector release recorded in `.trayector/REF`;
-- the current local `.trayector/` files, including custom changes;
-- the newly selected Trayector release tag.
-
-Non-conflicting upstream changes can be merged automatically while preserving local modifications.
+The workflow uses the current `.trayector/VERSION` as the previous release baseline, derives the corresponding Trayector tag, compares it with the selected new release and preserves local customizations through a three-way merge.
 
 If both the local profile and Trayector changed the same instruction in incompatible ways, the workflow preserves the local file and opens a pull request containing the incoming candidate and a conflict report. The profile owner reviews and resolves those differences before merging.
 
@@ -63,10 +58,8 @@ Typical Profile Kit files include:
 - `profile-rules.md` — how to read and modify the canonical career profile.
 - `resume-generation.md` — how to generate truthful tailored résumés and PDFs.
 - `resume/basic.md` — default résumé presentation template.
-- `VERSION` — Profile Kit version identifier.
+- `VERSION` — Profile Kit version and release baseline.
 
 A profile may add more files or customize these files locally.
-
-`REF` is written in the profile repository when a tagged Trayector release is installed or accepted. It is not part of the reusable upstream defaults because its value depends on the release chosen by that profile.
 
 Source: https://github.com/demonccc/trayector
