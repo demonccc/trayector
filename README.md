@@ -45,6 +45,18 @@ It is **not** a résumé generator, an ATS optimizer, a LinkedIn replacement, or
 
 Those can all become **views or consumers** of a Trayector profile.
 
+## Canonical knowledge and views
+
+Trayector separates the career model from the way it is presented.
+
+Canonical career knowledge lives in structured profile documents such as experience, projects, capabilities, stories, deep dives, feedback and content.
+
+The repository `README.md` is the default human-facing **profile index**, not the career model itself. It can summarize and link to canonical knowledge, and it can be regenerated when the profile changes.
+
+A profile may also include a small `TRAYECTOR.md` file that identifies the Trayector version and points to the specification without turning the personal README into documentation about Trayector.
+
+See [Profile Views](spec/profile-views.md).
+
 ## What can live in a Trayector profile?
 
 Anything that forms part of your career or demonstrates professional knowledge, including:
@@ -58,6 +70,7 @@ Anything that forms part of your career or demonstrates professional knowledge, 
 - lessons learned;
 - professional content and publications;
 - mentoring and leadership work;
+- recommendations and testimonials;
 - demonstrated capabilities and the evidence behind them.
 
 No code is required.
@@ -107,6 +120,7 @@ A typical profile looks like this:
 ```text
 my-career/
 ├── README.md
+├── TRAYECTOR.md
 ├── profile.json
 ├── settings.yaml
 ├── profile/
@@ -118,6 +132,7 @@ my-career/
 ├── deep-dives/
 ├── projects/
 ├── stories/
+├── feedback/
 ├── content/
 │   └── 2026-05-22-example-content/
 │       ├── content.esp.md
@@ -140,22 +155,23 @@ classifications:
 
 The profile owner may change those keys or add new ones. Trayector does not attempt to hard-code every language or every possible way of classifying professional content.
 
-Then:
+The recommended workflow is:
 
-1. Create a Git repository for your career profile.
-2. Add `profile.json` as the machine-readable entry point.
-3. Define profile-owned vocabulary in `settings.yaml`.
-4. Copy the relevant templates from [`templates/`](templates/).
-5. Document your experience using Markdown plus structured front matter.
-6. Connect capabilities to real evidence instead of relying on titles alone.
-7. Commit changes as your career evolves.
-8. Publish anywhere you want. Your repository remains the source of truth.
+1. collect source material such as CVs, LinkedIn data, project notes and repositories;
+2. create `profile.json` and profile-owned vocabulary;
+3. reconstruct canonical career knowledge from the sources;
+4. resolve contradictions instead of silently guessing;
+5. connect capabilities to real evidence;
+6. build `README.md` last as the human-facing profile index;
+7. version changes as the career evolves.
 
-See **[Getting Started](docs/getting-started.md)** for a complete example.
+See [Getting Started](docs/getting-started.md) for the guided flow.
+
+If AI will help reconstruct the profile, use [AI-Assisted Profile Creation](docs/ai-assisted-profile.md). The AI should read Trayector first, then the provided career sources, extract before rewriting, ask only about material ambiguities and generate the README only after the canonical profile exists.
 
 ## The source-of-truth principle
 
-LinkedIn, Medium, a personal website, a résumé PDF, an ATS profile, or an AI assistant are distribution and presentation channels.
+LinkedIn, Medium, a personal website, a résumé PDF, an ATS profile, an AI assistant, or the repository README itself are presentation or distribution views.
 
 Your professional knowledge should not depend on any of them.
 
@@ -172,10 +188,12 @@ trayector/
 ├── README.md
 ├── LICENSE
 ├── docs/
-│   └── getting-started.md
+│   ├── getting-started.md
+│   └── ai-assisted-profile.md
 ├── spec/
 │   ├── README.md
-│   └── principles.md
+│   ├── principles.md
+│   └── profile-views.md
 ├── templates/
 │   ├── settings.yaml
 │   ├── profile-template.md
@@ -183,7 +201,8 @@ trayector/
 │   ├── case-study-template.md
 │   ├── project-template.md
 │   ├── story-template.md
-│   └── content-template.md
+│   ├── content-template.md
+│   └── readme-template.md
 ├── schemas/
 │   └── profile.schema.json
 ├── taxonomy/
@@ -200,6 +219,7 @@ Trayector is built around a few rules:
 - **Contribution must be explicit.** Team achievements and personal contributions are not the same thing.
 - **Career is larger than employment.** Personal projects, research, labs, writing and community work count.
 - **Humans first, machines too.** Markdown remains useful without any special tooling.
+- **Canonical knowledge, derived views.** The README and future exports present the profile; they are not independent sources of truth.
 - **Structure over imposed taxonomy.** The profile owner controls vocabularies that are personal or contextual.
 - **Do not duplicate derivable information.** Paths and filenames should carry information when they can do so reliably.
 - **Plain data over descriptive wrappers.** Do not add metadata ceremony that contributes no meaning.
@@ -216,10 +236,10 @@ Trayector is currently an early specification (`v0.x`). The information model wi
 The initial focus is deliberately simple:
 
 1. define the model;
-2. make it pleasant to maintain manually;
-3. validate it;
+2. make it pleasant to maintain manually or with AI assistance;
+3. validate it against real careers;
 4. generate indexes and views;
-5. add query and AI tooling later.
+5. add query and automation tooling later.
 
 ## License
 
