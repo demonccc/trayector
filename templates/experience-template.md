@@ -1,19 +1,17 @@
 ---
-id: [Stable experience ID] [e.g., exp-acme-engineering-manager]
+id: exp-example
 type: experience
-organization: [Organization ID] [e.g., acme]
+organization: example-organization
 period:
-  from: [YYYY-MM] [e.g., 2024-01]
-  to: [YYYY-MM or present] [e.g., present]
-roles:
-  - [Role ID] [e.g., engineering-manager]
-capabilities:
-  - [Capability ID] [e.g., platform-engineering]
+  from: "YYYY-MM"
+  to: present
+roles: []
+capabilities: []
 contribution:
-  ideation: [none / supporting / shared / primary]
-  architecture: [none / supporting / shared / primary]
-  implementation: [none / supporting / shared / primary]
-  leadership: [none / supporting / shared / primary]
+  ideation: none
+  architecture: none
+  implementation: none
+  leadership: none
 related:
   deep_dives: []
   projects: []
@@ -38,6 +36,11 @@ related:
 - **Key decisions:** [Important decisions and trade-offs]
 - **Outcome:** [What changed]
 - **Evidence:** [Links to deep dives, projects, publications or other supporting material]
+
+## Sources
+
+- [Source document, public link, repository, or note]
+- [Additional source]
 
 ## What I Would Do Differently
 [Optional: decisions, failures, assumptions or approaches you would change today]
