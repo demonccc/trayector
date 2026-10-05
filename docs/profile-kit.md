@@ -63,7 +63,7 @@ v0.1.0
 
 Trayector uses Git tags as released Profile Kit baselines. A profile therefore knows both the semantic version it implements and the upstream release it was derived from.
 
-The release tag is also the three-way merge baseline for future updates. Released tags SHOULD be treated as immutable.
+Released tags SHOULD be treated as immutable.
 
 ## Local and customizable
 
