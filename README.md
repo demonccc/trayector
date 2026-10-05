@@ -65,7 +65,7 @@ This gives an AI enough in-repository guidance to understand the profile, naviga
 
 The Profile Kit starts from Trayector defaults but **may be customized by the profile owner**. Local templates and instructions are part of the profile configuration and are not disposable generated files.
 
-Updates are manual and PR-based. When the owner chooses to update, Trayector compares the previously accepted upstream version, the current local `.trayector/` customizations, and the selected new upstream version. Non-conflicting changes can merge automatically; incompatible changes are surfaced for human resolution instead of overwriting local work.
+Updates are manual and PR-based. When the owner chooses to update, Trayector compares the previously accepted release derived from `.trayector/VERSION`, the current local `.trayector/` customizations, and the selected new release. Non-conflicting changes can merge automatically; incompatible changes are surfaced for human resolution instead of overwriting local work.
 
 See [Trayector Profile Kit](docs/profile-kit.md).
 
@@ -127,7 +127,6 @@ my-career/
 │   ├── profile-rules.md
 │   ├── resume-generation.md
 │   ├── VERSION
-│   ├── UPSTREAM
 │   └── resume/
 ├── .github/
 │   └── workflows/
