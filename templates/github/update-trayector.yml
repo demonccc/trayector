@@ -40,7 +40,7 @@ jobs:
         id: diff
         shell: bash
         run: |
-          if git diff --quiet -- .trayector && git diff --cached --quiet -- .trayector; then
+          if [ -z "$(git status --porcelain -- .trayector)" ]; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
