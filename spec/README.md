@@ -20,6 +20,18 @@ A Trayector profile may contain the following entities:
 - **Story** — cross-cutting career narrative that does not belong to one job.
 - **Content** — professional writing, talks, notes and other intellectual output, without imposing a universal content taxonomy.
 
+## Canonical knowledge and views
+
+Trayector distinguishes the **canonical career model** from its **presentation views**.
+
+Canonical knowledge lives in profile documents, structured metadata and relationships. A README, résumé, website, portfolio, ATS export or AI-generated summary is a view over that knowledge.
+
+`README.md` SHOULD be treated as the default human-facing profile index, not as the canonical definition of the career itself.
+
+A profile MAY include `TRAYECTOR.md` as a small human-readable implementation note that identifies the Trayector version and points to the specification. `profile.json` remains the machine-readable version declaration and navigation entry point.
+
+See [Profile Views](profile-views.md).
+
 ## Required principles
 
 Implementations MUST preserve these semantics:
@@ -33,6 +45,7 @@ Implementations MUST preserve these semantics:
 7. Profiles MAY omit sections that are not relevant to the person.
 8. Metadata SHOULD NOT duplicate information that can be derived reliably from the file path.
 9. Trayector SHOULD define structure and semantics without imposing personal taxonomies that can be owned by the profile author.
+10. Derived views SHOULD NOT become independent sources of professional truth when canonical knowledge exists elsewhere in the profile.
 
 ## Document format
 
@@ -103,27 +116,7 @@ A content item without local assets simply omits `assets/`.
 
 The bundle directory identifies the content item. The date is derived from the directory name. The language key is derived from the Markdown filename and SHOULD resolve through `settings.yaml`.
 
-Example:
-
-```text
-content/
-└── 2026-05-22-t-shape-ia-square-shape/
-    ├── content.esp.md
-    └── assets/
-        └── square-shape-seniority.jpg
-```
-
-Language variants of the same item live in the same directory:
-
-```text
-content/
-└── 2026-05-29-ai-engineering/
-    ├── content.esp.md
-    ├── content.eng.md
-    └── assets/
-        ├── architecture.webp
-        └── model-strategies.webp
-```
+Language variants of the same item live in the same directory.
 
 Implementations SHOULD NOT require redundant `date`, `language`, `work_id` or `translation_of` metadata solely to express information already present in the path.
 
@@ -189,6 +182,16 @@ capabilities:
 ```
 
 A profile MAY contain claimed capabilities without evidence, but consumers SHOULD distinguish them from evidenced capabilities rather than silently treating both as equivalent.
+
+## AI-assisted creation
+
+AI MAY assist with profile reconstruction, normalization, linking and view generation.
+
+An AI SHOULD read Trayector's specification and guidance before modeling supplied career sources. It SHOULD extract before rewriting, preserve source fidelity, flag material contradictions and ask the person to resolve ambiguities that materially affect the canonical profile.
+
+The AI SHOULD create or update canonical knowledge before generating presentation views such as `README.md`.
+
+See [AI-Assisted Profile Creation](../docs/ai-assisted-profile.md).
 
 ## Extensibility
 
