@@ -46,7 +46,7 @@ my-career/
 │   ├── profile-rules.md
 │   ├── resume-generation.md
 │   ├── VERSION
-│   ├── UPSTREAM
+│   ├── REF
 │   └── resume/
 │       └── basic.md
 ├── .github/
@@ -68,17 +68,25 @@ my-career/
 
 You do not need to use every canonical career directory. Add only what represents your career.
 
-`README.md` is a profile view and index. `TRAYECTOR.md` is an optional small implementation note. `profile.json` is the machine-readable entry point. `.trayector/` contains local instructions for AI agents and profile tooling.
+`README.md` is a profile view and index. `TRAYECTOR.md` is an optional small implementation note. `profile.json` is the machine-readable entry point. `.trayector/` contains the local Trayector Profile Kit used by AI agents and profile tooling.
 
 ## 4. Install the Trayector Profile Kit
 
-Copy the upstream `profile-kit/` directory from Trayector into `.trayector/` in the profile repository.
+Choose a released Trayector tag, for example `v0.1.0`.
 
-Record the exact Trayector commit used for that copy in:
+Copy that release's `profile-kit/` directory into `.trayector/` in the profile repository, then create:
 
 ```text
-.trayector/UPSTREAM
+.trayector/REF
 ```
+
+with the selected release tag:
+
+```text
+v0.1.0
+```
+
+`profile-kit/VERSION` provides the corresponding semantic Profile Kit version.
 
 Then install the updater workflow from:
 
@@ -92,17 +100,7 @@ as:
 .github/workflows/update-trayector.yml
 ```
 
-The Profile Kit may be customized locally. Trayector provides upstream defaults, but local edits are first-class profile configuration and must not be silently replaced.
-
-The update workflow is **manual only**. The repository owner chooses when to run it and which Trayector ref to compare against.
-
-The updater performs a three-way comparison between:
-
-1. the previously accepted Trayector commit recorded in `.trayector/UPSTREAM`;
-2. the current local `.trayector/` files, including custom modifications;
-3. the selected newer Trayector upstream version.
-
-Non-conflicting changes can be merged automatically. If both local and upstream instructions changed incompatibly, the workflow preserves the local file and opens a pull request containing the incoming candidate and a conflict report for manual resolution.
+The updater is manual. When you choose to update, run the workflow and provide the target Trayector release tag. The updater uses the current `.trayector/REF`, the local customized kit and the selected new tag to build a reviewable three-way update PR.
 
 See [Trayector Profile Kit](profile-kit.md).
 
@@ -130,7 +128,7 @@ Use [`../templates/settings.yaml`](../templates/settings.yaml) as a starting poi
 
 ## 6. Add the machine-readable entry point
 
-`profile.json` tells tools where the important parts of the repository live and where local Trayector instructions can be found.
+`profile.json` tells tools where the important parts of the repository live and where local Trayector instructions and release metadata can be found.
 
 Example:
 
@@ -139,7 +137,8 @@ Example:
   "trayector_version": "0.1",
   "trayector": {
     "instructions": ".trayector/README.md",
-    "profile_kit_version": ".trayector/VERSION"
+    "profile_kit_version": ".trayector/VERSION",
+    "profile_kit_ref": ".trayector/REF"
   },
   "profile": {
     "name": "Alex Example",
