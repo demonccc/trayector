@@ -40,13 +40,14 @@ my-career/
 ├── README.md
 ├── TRAYECTOR.md
 ├── profile.json
-├── settings.yaml
 ├── .trayector/
 │   ├── README.md
 │   ├── profile-rules.md
 │   ├── resume-generation.md
 │   ├── VERSION
-│   ├── REF
+│   ├── settings/
+│   │   ├── languages.yaml
+│   │   └── classifications.yaml
 │   └── resume/
 │       └── basic.md
 ├── .github/
@@ -72,23 +73,11 @@ You do not need to use every canonical career directory. Add only what represent
 
 ## 4. Install the Trayector Profile Kit
 
-Choose a released Trayector tag, for example `v0.1.0`.
+During development, copy the current `profile-kit/` directory into `.trayector/` in the profile repository.
 
-Copy that release's `profile-kit/` directory into `.trayector/` in the profile repository, then create:
+Once Trayector starts publishing releases, `.trayector/VERSION` will identify the release baseline by convention: version `0.1.0` corresponds to tag `v0.1.0`.
 
-```text
-.trayector/REF
-```
-
-with the selected release tag:
-
-```text
-v0.1.0
-```
-
-`profile-kit/VERSION` provides the corresponding semantic Profile Kit version.
-
-Then install the updater workflow from:
+Install the updater workflow from:
 
 ```text
 templates/github/update-trayector.yml
@@ -100,35 +89,43 @@ as:
 .github/workflows/update-trayector.yml
 ```
 
-The updater is manual. When you choose to update, run the workflow and provide the target Trayector release tag. The updater uses the current `.trayector/REF`, the local customized kit and the selected new tag to build a reviewable three-way update PR.
+The updater is manual. It is intended for tagged releases once releases exist. Until then, do not treat the current development state as a release.
 
 See [Trayector Profile Kit](profile-kit.md).
 
-## 5. Define your profile vocabulary
+## 5. Configure the profile
 
-`settings.yaml` defines profile-owned vocabulary that humans and AI can understand by reading the file. Trayector does not require one universal classification system or one fixed language-code standard.
+Profile-owned configuration lives under:
 
-Example:
-
-```yaml
-languages:
-  esp: Español
-  eng: English
-  br: Português do Brasil
-
-classifications:
-  linkedin-post: Publicación profesional en LinkedIn
-  article: Artículo largo o de profundidad
-  technical-note: Nota técnica enfocada en un tema concreto
+```text
+.trayector/settings/
 ```
 
-The keys are intentionally owner-defined. You can rename them, remove them or add new ones.
+Each file represents one configurable area. Start only with the sections you actually need.
 
-Use [`../templates/settings.yaml`](../templates/settings.yaml) as a starting point.
+For example:
+
+`languages.yaml`:
+
+```yaml
+esp: Español
+eng: English
+br: Português do Brasil
+```
+
+`classifications.yaml`:
+
+```yaml
+linkedin-post: Publicación profesional en LinkedIn
+article: Artículo largo o de profundidad
+technical-note: Nota técnica enfocada en un tema concreto
+```
+
+The keys are intentionally owner-defined. A profile can rename, remove or extend them.
 
 ## 6. Add the machine-readable entry point
 
-`profile.json` tells tools where the important parts of the repository live and where local Trayector instructions and release metadata can be found.
+`profile.json` tells tools where the important parts of the repository live and where local Trayector instructions and settings can be found.
 
 Example:
 
@@ -138,7 +135,7 @@ Example:
   "trayector": {
     "instructions": ".trayector/README.md",
     "profile_kit_version": ".trayector/VERSION",
-    "profile_kit_ref": ".trayector/REF"
+    "settings": ".trayector/settings/"
   },
   "profile": {
     "name": "Alex Example",
@@ -160,7 +157,7 @@ Example:
 }
 ```
 
-An AI entering the repository should read `profile.json`, follow `trayector.instructions`, then traverse canonical career knowledge through `navigation`.
+An AI entering the repository should read `profile.json`, follow `trayector.instructions`, read the relevant files under `trayector.settings`, then traverse canonical career knowledge through `navigation`.
 
 ## 7. Build the canonical profile before the README
 
@@ -191,16 +188,7 @@ Avoid ambiguous statements such as:
 
 Who did what?
 
-Prefer:
-
-```yaml
-contribution:
-  architecture: primary
-  implementation: partial
-  leadership: primary
-```
-
-Then explain the contribution in prose.
+Prefer explicit contribution metadata and then explain the contribution in prose.
 
 This lets a reader distinguish between work you personally designed, work you implemented, work you led, and achievements produced by a team you managed.
 
@@ -240,9 +228,11 @@ content/
         └── square-shape-seniority.jpg
 ```
 
-The directory carries the date and slug. The filename carries the language key defined in `settings.yaml`. Do not repeat information in metadata when it can be derived reliably from the path.
+The directory carries the date and slug. The filename carries the language key defined in `.trayector/settings/languages.yaml`. Do not repeat information in metadata when it can be derived reliably from the path.
 
-Classification belongs in YAML front matter and resolves through `settings.yaml`.
+Classification resolves through `.trayector/settings/classifications.yaml`.
+
+Publications, sources and related content should be represented as readable Markdown lists when they are primarily human-facing information.
 
 Use [`../templates/content-template.md`](../templates/content-template.md).
 
@@ -251,16 +241,6 @@ Use [`../templates/content-template.md`](../templates/content-template.md).
 Once the canonical profile exists, build `README.md` as the primary human-facing index.
 
 It should present the person, not explain Trayector.
-
-A useful README usually includes:
-
-- a concise professional introduction;
-- current focus;
-- major capability areas;
-- links to the career timeline and experience;
-- selected projects / evidence;
-- selected content;
-- feedback and education when useful.
 
 Use [`../templates/readme-template.md`](../templates/readme-template.md).
 
@@ -282,8 +262,6 @@ The generator should:
 
 Use the local `.trayector/resume-generation.md` instructions inside the profile repository.
 
-Trayector also documents the workflow in [Tailored Résumés](tailored-resumes.md).
-
 Generated application-specific outputs can live under:
 
 ```text
@@ -296,15 +274,7 @@ They are views, not canonical career data.
 
 Your career evolves. Your profile should too.
 
-Use normal Git workflows:
-
-```bash
-git add .
-git commit -m "Add data platform case study"
-git push
-```
-
-The history itself becomes useful context: when a capability appeared, when a project evolved, and how your thinking changed.
+Use normal Git workflows. The history itself becomes useful context: when a capability appeared, when a project evolved, and how your thinking changed.
 
 ## What Trayector does not require
 
