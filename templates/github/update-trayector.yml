@@ -1,0 +1,75 @@
+name: Update Trayector Profile Kit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 6 * * *"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout profile repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout Trayector
+        uses: actions/checkout@v4
+        with:
+          repository: demonccc/trayector
+          ref: main
+          path: .trayector-upstream
+
+      - name: Sync managed Profile Kit
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          rm -rf .trayector
+          mkdir -p .trayector
+          cp -a .trayector-upstream/profile-kit/. .trayector/
+          rm -rf .trayector-upstream
+
+      - name: Check for changes
+        id: diff
+        shell: bash
+        run: |
+          if git diff --quiet -- .trayector && git diff --cached --quiet -- .trayector; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open or update Trayector update PR
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          branch="trayector/update-profile-kit"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git checkout -B "$branch"
+          git add .trayector
+          git commit -m "chore: update Trayector profile kit"
+          git push --force-with-lease origin "$branch"
+
+          existing="$(gh pr list --head "$branch" --state open --json number --jq '.[0].number // empty')"
+
+          if [ -z "$existing" ]; then
+            gh pr create \
+              --base "${{ github.event.repository.default_branch }}" \
+              --head "$branch" \
+              --title "Update Trayector profile instructions" \
+              --body "Updates the managed \`.trayector/\` Profile Kit from \`demonccc/trayector@main\`. Review the instruction changes before merging."
+          fi
