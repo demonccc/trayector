@@ -46,6 +46,7 @@ my-career/
 │   ├── profile-rules.md
 │   ├── resume-generation.md
 │   ├── VERSION
+│   ├── UPSTREAM
 │   └── resume/
 │       └── basic.md
 ├── .github/
@@ -67,11 +68,17 @@ my-career/
 
 You do not need to use every canonical career directory. Add only what represents your career.
 
-`README.md` is a profile view and index. `TRAYECTOR.md` is an optional small implementation note. `profile.json` is the machine-readable entry point. `.trayector/` contains managed instructions for AI agents and profile tooling.
+`README.md` is a profile view and index. `TRAYECTOR.md` is an optional small implementation note. `profile.json` is the machine-readable entry point. `.trayector/` contains local instructions for AI agents and profile tooling.
 
 ## 4. Install the Trayector Profile Kit
 
 Copy the upstream `profile-kit/` directory from Trayector into `.trayector/` in the profile repository.
+
+Record the exact Trayector commit used for that copy in:
+
+```text
+.trayector/UPSTREAM
+```
 
 Then install the updater workflow from:
 
@@ -85,9 +92,17 @@ as:
 .github/workflows/update-trayector.yml
 ```
 
-The workflow checks Trayector `main` for Profile Kit changes and opens a pull request when the managed instructions change.
+The Profile Kit may be customized locally. Trayector provides upstream defaults, but local edits are first-class profile configuration and must not be silently replaced.
 
-The updater owns only `.trayector/`. It must not rewrite personal career data automatically.
+The update workflow is **manual only**. The repository owner chooses when to run it and which Trayector ref to compare against.
+
+The updater performs a three-way comparison between:
+
+1. the previously accepted Trayector commit recorded in `.trayector/UPSTREAM`;
+2. the current local `.trayector/` files, including custom modifications;
+3. the selected newer Trayector upstream version.
+
+Non-conflicting changes can be merged automatically. If both local and upstream instructions changed incompatibly, the workflow preserves the local file and opens a pull request containing the incoming candidate and a conflict report for manual resolution.
 
 See [Trayector Profile Kit](profile-kit.md).
 
@@ -115,7 +130,7 @@ Use [`../templates/settings.yaml`](../templates/settings.yaml) as a starting poi
 
 ## 6. Add the machine-readable entry point
 
-`profile.json` tells tools where the important parts of the repository live and where managed Trayector instructions can be found.
+`profile.json` tells tools where the important parts of the repository live and where local Trayector instructions can be found.
 
 Example:
 
@@ -266,7 +281,7 @@ The generator should:
 6. generate the source résumé;
 7. render a PDF from the reviewed source when PDF tooling is available.
 
-Use the managed `.trayector/resume-generation.md` instructions inside the profile repository.
+Use the local `.trayector/resume-generation.md` instructions inside the profile repository.
 
 Trayector also documents the workflow in [Tailored Résumés](tailored-resumes.md).
 
