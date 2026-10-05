@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       trayector_ref:
-        description: "Trayector ref to update from"
-        required: false
-        default: "main"
+        description: "Trayector release tag to update from (for example v0.2.0)"
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -30,7 +30,7 @@ jobs:
       - name: Prepare Trayector snapshots
         id: upstream
         env:
-          TRAYECTOR_REF: ${{ inputs.trayector_ref }}
+          NEW_REF: ${{ inputs.trayector_ref }}
         shell: bash
         run: |
           set -euo pipefail
@@ -43,31 +43,39 @@ jobs:
           mkdir -p "$base_dir" "$new_dir"
 
           git clone --filter=blob:none --no-checkout https://github.com/demonccc/trayector.git "$repo"
-          git -C "$repo" fetch --depth=1 origin "$TRAYECTOR_REF"
-          new_sha="$(git -C "$repo" rev-parse FETCH_HEAD)"
 
-          base_sha=""
-          if [ -f .trayector/UPSTREAM ]; then
-            base_sha="$(tr -d '[:space:]' < .trayector/UPSTREAM)"
+          if ! git -C "$repo" fetch --depth=1 origin "refs/tags/$NEW_REF:refs/tags/$NEW_REF"; then
+            echo "Trayector release tag '$NEW_REF' was not found." >&2
+            exit 1
           fi
 
-          if [ -n "$base_sha" ]; then
-            if ! git -C "$repo" cat-file -e "${base_sha}^{commit}" 2>/dev/null; then
-              git -C "$repo" fetch origin "$base_sha"
+          base_ref=""
+          if [ -f .trayector/REF ]; then
+            base_ref="$(tr -d '[:space:]' < .trayector/REF)"
+          fi
+
+          if [ -n "$base_ref" ]; then
+            if ! git -C "$repo" fetch --depth=1 origin "refs/tags/$base_ref:refs/tags/$base_ref"; then
+              echo "Current Trayector baseline tag '$base_ref' was not found upstream." >&2
+              exit 1
             fi
-            git -C "$repo" archive "$base_sha" profile-kit | tar -x -C "$base_dir"
+            git -C "$repo" archive "$base_ref" profile-kit | tar -x -C "$base_dir"
           fi
 
-          git -C "$repo" archive "$new_sha" profile-kit | tar -x -C "$new_dir"
+          git -C "$repo" archive "$NEW_REF" profile-kit | tar -x -C "$new_dir"
 
-          echo "base_sha=$base_sha" >> "$GITHUB_OUTPUT"
-          echo "new_sha=$new_sha" >> "$GITHUB_OUTPUT"
+          version="$(tr -d '[:space:]' < "$new_dir/profile-kit/VERSION")"
+
+          echo "base_ref=$base_ref" >> "$GITHUB_OUTPUT"
+          echo "new_ref=$NEW_REF" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Three-way update Profile Kit
         id: merge
         env:
-          BASE_SHA: ${{ steps.upstream.outputs.base_sha }}
-          NEW_SHA: ${{ steps.upstream.outputs.new_sha }}
+          BASE_REF: ${{ steps.upstream.outputs.base_ref }}
+          NEW_REF: ${{ steps.upstream.outputs.new_ref }}
+          NEW_VERSION: ${{ steps.upstream.outputs.version }}
         shell: bash
         run: |
           set -euo pipefail
@@ -86,9 +94,9 @@ jobs:
           conflicts=0
           : > /tmp/trayector-conflicts
 
-          if [ -z "$BASE_SHA" ]; then
-            echo "No .trayector/UPSTREAM baseline was found." >> /tmp/trayector-conflicts
-            echo "The updater will not overwrite existing local files without a known base." >> /tmp/trayector-conflicts
+          if [ -z "$BASE_REF" ]; then
+            printf '%s\n' "No .trayector/REF baseline was found." >> /tmp/trayector-conflicts
+            printf '%s\n' "Existing local files will not be overwritten without a known release baseline." >> /tmp/trayector-conflicts
             conflicts=1
           fi
 
@@ -111,19 +119,17 @@ jobs:
 
             mkdir -p "$(dirname "$local")"
 
-            # No trusted base: only add files that do not collide with local customizations.
-            if [ -z "$BASE_SHA" ]; then
+            if [ -z "$BASE_REF" ]; then
               if [ "$r" -eq 1 ] && [ "$l" -eq 0 ]; then
                 cp "$remote" "$local"
               elif [ "$r" -eq 1 ] && [ "$l" -eq 1 ] && ! cmp -s "$local" "$remote"; then
                 mkdir -p "$incoming_dir/$(dirname "$path")"
                 cp "$remote" "$incoming_dir/$path"
-                printf '%s\n' "- \`$path\`: local file exists and no upstream baseline is known." >> /tmp/trayector-conflicts
+                printf '%s\n' "- \`$path\`: local file exists and no release baseline is known." >> /tmp/trayector-conflicts
               fi
               continue
             fi
 
-            # File added upstream.
             if [ "$b" -eq 0 ] && [ "$r" -eq 1 ]; then
               if [ "$l" -eq 0 ]; then
                 cp "$remote" "$local"
@@ -136,7 +142,6 @@ jobs:
               continue
             fi
 
-            # File removed upstream.
             if [ "$b" -eq 1 ] && [ "$r" -eq 0 ]; then
               if [ "$l" -eq 0 ]; then
                 :
@@ -149,7 +154,6 @@ jobs:
               continue
             fi
 
-            # File exists upstream in both versions.
             if [ "$b" -eq 1 ] && [ "$r" -eq 1 ]; then
               if [ "$l" -eq 0 ]; then
                 if ! cmp -s "$base" "$remote"; then
@@ -171,7 +175,6 @@ jobs:
               fi
 
               if cmp -s "$remote" "$base"; then
-                # Local-only customization: preserve it.
                 continue
               fi
 
@@ -193,25 +196,28 @@ jobs:
           done
 
           if [ "$conflicts" -eq 0 ]; then
-            printf '%s\n' "$NEW_SHA" > "$local_dir/UPSTREAM"
+            printf '%s\n' "$NEW_REF" > "$local_dir/REF"
+            printf '%s\n' "$NEW_VERSION" > "$local_dir/VERSION"
             rm -rf "$review_dir"
             echo "conflicts=false" >> "$GITHUB_OUTPUT"
           else
             cat > "$report" <<EOF
           # Trayector update requires review
 
-          The Profile Kit contains local customizations that could not be safely reconciled automatically.
+          The local Profile Kit contains customizations that could not be safely reconciled automatically.
 
-          - Previous upstream: ${BASE_SHA:-unknown}
-          - Proposed upstream: $NEW_SHA
+          - Previous release: ${BASE_REF:-unknown}
+          - Proposed release: $NEW_REF
+          - Proposed Profile Kit version: $NEW_VERSION
 
-          Local files were preserved. Incoming or auto-merged conflict candidates are under \`.trayector/.update/incoming/\`.
+          Local files were preserved. Incoming or conflict candidates are under \`.trayector/.update/incoming/\`.
 
           Resolve each item manually in the actual \`.trayector/\` file. When the update is fully resolved:
 
           1. remove \`.trayector/.update/\`;
-          2. set \`.trayector/UPSTREAM\` to \`$NEW_SHA\`;
-          3. commit those resolutions to this PR branch.
+          2. set \`.trayector/REF\` to \`$NEW_REF\`;
+          3. set \`.trayector/VERSION\` to \`$NEW_VERSION\`;
+          4. commit those resolutions to this PR branch.
 
           ## Conflicts
 
@@ -237,7 +243,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           HAS_CONFLICTS: ${{ steps.merge.outputs.conflicts }}
-          NEW_SHA: ${{ steps.upstream.outputs.new_sha }}
+          NEW_REF: ${{ steps.upstream.outputs.new_ref }}
+          NEW_VERSION: ${{ steps.upstream.outputs.version }}
         shell: bash
         run: |
           set -euo pipefail
@@ -249,15 +256,15 @@ jobs:
 
           git checkout -B "$branch"
           git add .trayector
-          git commit -m "chore: propose Trayector profile kit update"
+          git commit -m "chore: propose Trayector $NEW_REF profile kit update"
 
           git fetch origin "$branch" 2>/dev/null || true
           git push --force-with-lease origin "$branch"
 
           if [ "$HAS_CONFLICTS" = "true" ]; then
-            body="Trayector Profile Kit update to \`$NEW_SHA\` requires manual conflict resolution. Local customizations were preserved. Review \`.trayector/.update/README.md\`, resolve the affected files in \`.trayector/\`, remove \`.trayector/.update/\`, and update \`.trayector/UPSTREAM\` before merging."
+            body="Trayector Profile Kit update to \`$NEW_REF\` ($NEW_VERSION) requires manual conflict resolution. Local customizations were preserved. Review \`.trayector/.update/README.md\`, resolve the affected files in \`.trayector/\`, remove \`.trayector/.update/\`, and update \`.trayector/REF\` and \`.trayector/VERSION\` before merging."
           else
-            body="Proposes a three-way update of the local Trayector Profile Kit to \`$NEW_SHA\`. Local customizations that do not conflict with upstream changes are preserved. Review the diff before merging."
+            body="Proposes a three-way update of the local Trayector Profile Kit to release \`$NEW_REF\` ($NEW_VERSION). Local customizations that do not conflict with upstream changes are preserved. Review the diff before merging."
           fi
 
           existing="$(gh pr list --head "$branch" --state open --json number --jq '.[0].number // empty')"
@@ -266,8 +273,8 @@ jobs:
             gh pr create \
               --base "${{ github.event.repository.default_branch }}" \
               --head "$branch" \
-              --title "Update Trayector profile instructions" \
+              --title "Update Trayector profile instructions to $NEW_REF" \
               --body "$body"
           else
-            gh pr edit "$existing" --body "$body"
+            gh pr edit "$existing" --title "Update Trayector profile instructions to $NEW_REF" --body "$body"
           fi
