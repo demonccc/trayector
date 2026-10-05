@@ -56,7 +56,7 @@ Anything that forms part of your career or demonstrates professional knowledge, 
 - courses, research and experiments;
 - achievements and failures;
 - lessons learned;
-- articles, posts, talks and publications;
+- professional content and publications;
 - mentoring and leadership work;
 - demonstrated capabilities and the evidence behind them.
 
@@ -93,14 +93,14 @@ Person
   ├── demonstrated ──────> Big Data Architecture
   ├── designed ──────────> Data Platform
   ├── led ───────────────> Platform Team
-  └── published ─────────> Architecture Article
+  └── published ─────────> Architecture Content
                               │
                               └── evidence / context / outcome
 ```
 
 ## How do I use it?
 
-You create **your own career repository**. Trayector defines the structure and conventions; your repository contains your information.
+You create **your own career repository**. Trayector defines structural conventions; your repository contains your information and owns personal vocabularies such as content classifications and language keys.
 
 A typical profile looks like this:
 
@@ -108,6 +108,7 @@ A typical profile looks like this:
 my-career/
 ├── README.md
 ├── profile.json
+├── settings.yaml
 ├── profile/
 │   ├── summary.md
 │   ├── career-timeline.md
@@ -118,21 +119,37 @@ my-career/
 ├── projects/
 ├── stories/
 ├── content/
-│   ├── posts/
-│   ├── articles/
-│   └── talks/
+│   └── 2026-05-22-example-content/
+│       ├── content.esp.md
+│       └── assets/
 └── generated/
 ```
+
+`settings.yaml` is intentionally simple and readable:
+
+```yaml
+languages:
+  esp: Español
+  eng: English
+  br: Português do Brasil
+
+classifications:
+  linkedin-post: Publicación profesional en LinkedIn
+  article: Artículo largo o de profundidad
+```
+
+The profile owner may change those keys or add new ones. Trayector does not attempt to hard-code every language or every possible way of classifying professional content.
 
 Then:
 
 1. Create a Git repository for your career profile.
 2. Add `profile.json` as the machine-readable entry point.
-3. Copy the relevant templates from [`templates/`](templates/).
-4. Document your experience using Markdown plus structured front matter.
-5. Connect capabilities to real evidence instead of relying on titles alone.
-6. Commit changes as your career evolves.
-7. Publish anywhere you want. Your repository remains the source of truth.
+3. Define profile-owned vocabulary in `settings.yaml`.
+4. Copy the relevant templates from [`templates/`](templates/).
+5. Document your experience using Markdown plus structured front matter.
+6. Connect capabilities to real evidence instead of relying on titles alone.
+7. Commit changes as your career evolves.
+8. Publish anywhere you want. Your repository remains the source of truth.
 
 See **[Getting Started](docs/getting-started.md)** for a complete example.
 
@@ -154,13 +171,13 @@ This repository contains the Trayector specification and reference material:
 trayector/
 ├── README.md
 ├── LICENSE
-├── NOTICE
 ├── docs/
 │   └── getting-started.md
 ├── spec/
 │   ├── README.md
 │   └── principles.md
 ├── templates/
+│   ├── settings.yaml
 │   ├── profile-template.md
 │   ├── experience-template.md
 │   ├── case-study-template.md
@@ -183,6 +200,9 @@ Trayector is built around a few rules:
 - **Contribution must be explicit.** Team achievements and personal contributions are not the same thing.
 - **Career is larger than employment.** Personal projects, research, labs, writing and community work count.
 - **Humans first, machines too.** Markdown remains useful without any special tooling.
+- **Structure over imposed taxonomy.** The profile owner controls vocabularies that are personal or contextual.
+- **Do not duplicate derivable information.** Paths and filenames should carry information when they can do so reliably.
+- **Plain data over descriptive wrappers.** Do not add metadata ceremony that contributes no meaning.
 - **Open formats.** Your career should not be trapped in a proprietary platform.
 - **One source, many views.** Résumés, websites and social posts can be generated from the same underlying knowledge.
 - **Do not invent evidence.** Unknown or unverified information should remain unknown or unverified.
@@ -209,7 +229,7 @@ The specification and reference implementation are intentionally open and may be
 
 The goal is adoption and portability: if a platform wants to support Trayector profiles, it should be able to do so.
 
-See [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).
+See [`LICENSE`](LICENSE).
 
 ## Contributing
 

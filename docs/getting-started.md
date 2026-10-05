@@ -1,6 +1,6 @@
 # Getting Started
 
-Trayector is designed to be useful before any CLI, service or AI integration exists. The first implementation is deliberately boring: **Markdown, JSON and Git**.
+Trayector is designed to be useful before any CLI, service or AI integration exists. The first implementation is deliberately boring: **Markdown, YAML, JSON and Git**.
 
 ## 1. Create your career repository
 
@@ -20,6 +20,7 @@ The repository name is yours. It does not need to contain `trayector`.
 my-career/
 ├── README.md
 ├── profile.json
+├── settings.yaml
 ├── profile/
 │   ├── summary.md
 │   ├── career-timeline.md
@@ -30,15 +31,34 @@ my-career/
 ├── projects/
 ├── stories/
 ├── content/
-│   ├── posts/
-│   ├── articles/
-│   └── talks/
 └── generated/
 ```
 
 You do not need to use every directory. Add only what represents your career.
 
-## 3. Add the machine-readable entry point
+## 3. Define your profile vocabulary
+
+`settings.yaml` defines profile-owned vocabulary that humans and AI can understand by reading the file. Trayector does not require one universal classification system or one fixed language-code standard.
+
+Example:
+
+```yaml
+languages:
+  esp: Español
+  eng: English
+  br: Português do Brasil
+
+classifications:
+  linkedin-post: Publicación profesional en LinkedIn
+  article: Artículo largo o de profundidad
+  technical-note: Nota técnica enfocada en un tema concreto
+```
+
+The keys are intentionally owner-defined. You can rename them, remove them or add new ones.
+
+Use [`../templates/settings.yaml`](../templates/settings.yaml) as a starting point.
+
+## 4. Add the machine-readable entry point
 
 `profile.json` tells tools where the important parts of the repository live.
 
@@ -65,24 +85,31 @@ Example:
 }
 ```
 
-## 4. Document experience, not just employment
+## 5. Document experience, not just employment
 
-Create one experience document for a coherent role/seniority period.
+Create one experience document for a coherent employment or professional-engagement period.
 
-If you were promoted, changed scope substantially, or moved from IC to management inside the same company, use separate documents.
+An experience may include role progression when the organizational context remains continuous. Split it when there are genuinely separate employment periods, clearly different engagements, or a scope change that benefits from its own independent context. Do not create extra documents solely because a title changed.
 
-Example:
+Both of these can be valid:
+
+```text
+experience/
+└── acme.md
+```
+
+or, when separate contexts are useful:
 
 ```text
 experience/
 └── acme/
-    ├── senior-engineer.md
-    └── engineering-manager.md
+    ├── platform-engineering.md
+    └── consulting-engagement.md
 ```
 
 Use [`../templates/experience-template.md`](../templates/experience-template.md).
 
-## 5. Make contribution explicit
+## 6. Make contribution explicit
 
 Avoid ambiguous statements such as:
 
@@ -103,7 +130,7 @@ Then explain the contribution in prose.
 
 This lets a reader distinguish between work you personally designed, work you implemented, work you led, and achievements produced by a team you managed.
 
-## 6. Connect capabilities to evidence
+## 7. Connect capabilities to evidence
 
 Do not infer capability from titles alone.
 
@@ -125,19 +152,19 @@ Evidence:
 
 A capability may be demonstrated by work experience, personal projects, labs, publications, open-source contributions, talks or other relevant work.
 
-## 7. Use deep dives when a bullet is not enough
+## 8. Use deep dives when a bullet is not enough
 
 An experience document should remain navigable. If an initiative needs architecture diagrams, failure modes, constraints and detailed trade-offs, create a deep dive and link to it.
 
 ```text
-experience/acme/engineering-manager.md
-                 │
-                 └── ../../deep-dives/realtime-data-platform.md
+experience/acme.md
+        │
+        └── ../deep-dives/realtime-data-platform.md
 ```
 
 Use [`../templates/case-study-template.md`](../templates/case-study-template.md).
 
-## 8. Treat personal work as first-class evidence
+## 9. Treat personal work as first-class evidence
 
 A personal project is not automatically less valuable than paid work.
 
@@ -152,19 +179,56 @@ projects/
 
 Use [`../templates/project-template.md`](../templates/project-template.md).
 
-## 9. Keep your writing with your career
+## 10. Keep your writing with your career
 
-You can store the canonical version of posts, articles and talks under `content/` and publish them to LinkedIn, Medium, a blog or elsewhere.
+Trayector treats professional writing as content, without forcing the directory structure to decide whether something is a post, article, note, talk or another owner-defined classification.
+
+Every content item uses the same shape:
 
 ```text
-content/posts/platform-engineering-is-a-product.md
+content/
+└── 2026-05-22-t-shape-ia-square-shape/
+    ├── content.esp.md
+    └── assets/
+        └── square-shape-seniority.jpg
 ```
 
-The platform is a channel. Your repository remains the source of truth.
+A content item without assets simply omits `assets/`:
+
+```text
+content/
+└── 2026-05-08-algoritmo-vs-criterio-seleccion/
+    └── content.esp.md
+```
+
+Language variants live in the same item directory:
+
+```text
+content/
+└── 2026-05-29-ai-engineering/
+    ├── content.esp.md
+    ├── content.eng.md
+    └── assets/
+        ├── architecture.webp
+        └── model-strategies.webp
+```
+
+The directory carries the date and slug. The filename carries the language key defined in `settings.yaml`. Do not repeat information in metadata when it can be derived reliably from the path.
+
+Classification belongs in YAML front matter and resolves through `settings.yaml`. Front matter is the first block in the Markdown file so standard parsers can read it directly:
+
+```yaml
+---
+classification: linkedin-post
+status: published
+---
+```
+
+The publishing platform is a channel. It does not determine the content item's structure.
 
 Use [`../templates/content-template.md`](../templates/content-template.md).
 
-## 10. Version it
+## 11. Version it
 
 Your career evolves. Your profile should too.
 
@@ -200,7 +264,8 @@ You do **not** need:
 - confidential company information;
 - artificial metrics;
 - a specific job title;
-- a perfect career narrative.
+- a perfect career narrative;
+- a globally fixed list of languages or content classifications.
 
 Evidence can be descriptive while respecting confidentiality. The goal is to make your contribution and reasoning inspectable, not to leak proprietary information.
 

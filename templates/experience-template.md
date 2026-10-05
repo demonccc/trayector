@@ -1,10 +1,7 @@
-# [Company / Context]
-
 ---
 id: [Stable experience ID] [e.g., exp-acme-engineering-manager]
 type: experience
 organization: [Organization ID] [e.g., acme]
-seniority: [Seniority] [e.g., manager]
 period:
   from: [YYYY-MM] [e.g., 2024-01]
   to: [YYYY-MM or present] [e.g., present]
@@ -21,6 +18,8 @@ related:
   deep_dives: []
   projects: []
 ---
+
+# [Company / Context]
 
 ## Mission & Context
 [What the organization needed, what your scope was, and why the role existed]
