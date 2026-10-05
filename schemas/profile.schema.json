@@ -12,7 +12,8 @@
       "type": "object",
       "properties": {
         "instructions": { "type": "string" },
-        "profile_kit_version": { "type": "string" }
+        "profile_kit_version": { "type": "string" },
+        "profile_kit_ref": { "type": "string" }
       },
       "additionalProperties": true
     },
