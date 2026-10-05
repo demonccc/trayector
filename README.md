@@ -51,25 +51,21 @@ Trayector separates the career model from the way it is presented.
 
 Canonical career knowledge lives in structured profile documents such as experience, projects, capabilities, stories, deep dives, feedback and content.
 
-The repository `README.md` is the default human-facing **profile index**, not the career model itself.
+The repository `README.md` is the default human-facing **profile index**, not the career model itself. It can summarize and link to canonical knowledge, and it can be regenerated when the profile changes.
 
-A tailored résumé is another derived view. A target role can change what is selected, emphasized, ordered and summarized, but it cannot create new professional facts. The same canonical profile can generate different CVs for architecture, leadership or specialist roles without duplicating the underlying career data.
+A profile may also include a small `TRAYECTOR.md` file that identifies the Trayector version and points to the specification without turning the personal README into documentation about Trayector.
 
-See [Profile Views](spec/profile-views.md) and [Tailored Résumés](docs/tailored-resumes.md).
+See [Profile Views](spec/profile-views.md).
 
-## Self-describing profiles for AI
+## Local AI instructions
 
-A Trayector profile can carry a managed `.trayector/` **Profile Kit** with the instructions an AI needs to understand the repository and generate derived views correctly.
+A Trayector profile can carry a local Profile Kit under `.trayector/`.
 
-An AI entering a profile should be able to:
+This gives an AI enough in-repository guidance to understand the profile, navigate canonical career knowledge, build the README, and generate tailored résumés and PDFs without relying on prior chat context.
 
-1. read `profile.json`;
-2. follow `trayector.instructions` to `.trayector/README.md`;
-3. understand the canonical-vs-derived boundary;
-4. traverse the profile without guessing structure;
-5. generate a README, tailored résumé or PDF without inventing career facts.
+The Profile Kit starts from Trayector defaults but **may be customized by the profile owner**. Local templates and instructions are part of the profile configuration and are not disposable generated files.
 
-Trayector provides a GitHub Actions updater that checks the upstream Profile Kit and opens a pull request when those managed instructions change. Framework updates stay reviewable and do not silently rewrite personal career data.
+Updates are manual and PR-based. When the owner chooses to update, Trayector compares the previously accepted upstream version, the current local `.trayector/` customizations, and the selected new upstream version. Non-conflicting changes can merge automatically; incompatible changes are surfaced for human resolution instead of overwriting local work.
 
 See [Trayector Profile Kit](docs/profile-kit.md).
 
@@ -114,22 +110,9 @@ Outcome
   What happened as a result?
 ```
 
-A simplified relationship can look like this:
-
-```text
-Person
-  ├── held_role ─────────> Engineering Manager
-  ├── demonstrated ──────> Big Data Architecture
-  ├── designed ──────────> Data Platform
-  ├── led ───────────────> Platform Team
-  └── published ─────────> Architecture Content
-                              │
-                              └── evidence / context / outcome
-```
-
 ## How do I use it?
 
-You create **your own career repository**. Trayector defines structural conventions; your repository contains your information and owns personal vocabularies such as content classifications and language keys.
+You create **your own career repository**. Trayector defines structural conventions; your repository contains your information and owns local configuration and vocabularies.
 
 A typical profile looks like this:
 
@@ -143,8 +126,9 @@ my-career/
 │   ├── README.md
 │   ├── profile-rules.md
 │   ├── resume-generation.md
+│   ├── VERSION
+│   ├── UPSTREAM
 │   └── resume/
-│       └── basic.md
 ├── .github/
 │   └── workflows/
 │       └── update-trayector.yml
@@ -161,38 +145,21 @@ my-career/
 The recommended workflow is:
 
 1. collect source material such as CVs, LinkedIn data, project notes and repositories;
-2. install the Trayector Profile Kit and updater workflow;
+2. install the local Trayector Profile Kit;
 3. create `profile.json` and profile-owned vocabulary;
 4. reconstruct canonical career knowledge from the sources;
 5. resolve contradictions instead of silently guessing;
 6. connect capabilities to real evidence;
-7. build `README.md` last as the human-facing profile index;
-8. generate tailored résumés and PDFs as derived views when needed;
-9. version changes as the career evolves.
+7. build README and other views from the canonical knowledge;
+8. generate tailored résumés when needed;
+9. update the Profile Kit manually when you choose;
+10. version changes as the career evolves.
 
 See [Getting Started](docs/getting-started.md) for the guided flow.
 
 If AI will help reconstruct the profile, use [AI-Assisted Profile Creation](docs/ai-assisted-profile.md).
 
-## Tailored résumés
-
-Trayector includes a basic résumé template and instructions for generating job-specific CVs from the canonical profile.
-
-Given a target job description, an AI can:
-
-- analyze the role;
-- map requirements to real evidence in the profile;
-- select and prioritize relevant experience;
-- shorten unrelated material;
-- generate the résumé source;
-- validate every substantive claim;
-- render a PDF from the reviewed source when PDF tooling is available.
-
-The target job description influences **selection and presentation**, never truth.
-
-Multiple résumé templates can coexist when the presentation strategy materially differs, for example architecture, engineering leadership or technical-specialist formats.
-
-See [Tailored Résumés](docs/tailored-resumes.md) and [`templates/resume/`](templates/resume/).
+For application-specific CVs, use [Tailored Résumés](docs/tailored-resumes.md).
 
 ## The source-of-truth principle
 
@@ -204,43 +171,6 @@ With Trayector, the canonical source stays under your control and can later be r
 
 > **LinkedIn is a channel. Your career profile is the source of truth.**
 
-## Repository structure
-
-This repository contains the Trayector specification and reference material:
-
-```text
-trayector/
-├── README.md
-├── LICENSE
-├── docs/
-│   ├── getting-started.md
-│   ├── ai-assisted-profile.md
-│   ├── profile-kit.md
-│   └── tailored-resumes.md
-├── profile-kit/
-│   ├── README.md
-│   ├── profile-rules.md
-│   ├── resume-generation.md
-│   ├── VERSION
-│   └── resume/
-│       └── basic.md
-├── spec/
-│   ├── README.md
-│   ├── principles.md
-│   └── profile-views.md
-├── templates/
-│   ├── github/
-│   │   └── update-trayector.yml
-│   ├── resume/
-│   │   ├── README.md
-│   │   └── basic.md
-│   └── ...
-├── schemas/
-│   └── profile.schema.json
-└── examples/
-    └── minimal-profile/
-```
-
 ## Design principles
 
 Trayector is built around a few rules:
@@ -249,8 +179,8 @@ Trayector is built around a few rules:
 - **Contribution must be explicit.** Team achievements and personal contributions are not the same thing.
 - **Career is larger than employment.** Personal projects, research, labs, writing and community work count.
 - **Humans first, machines too.** Markdown remains useful without any special tooling.
-- **Canonical knowledge, derived views.** README, CVs and PDFs present the profile; they are not independent sources of truth.
-- **Framework guidance travels with the profile.** AI instructions can live in a managed `.trayector/` folder and evolve through reviewable updates.
+- **Canonical knowledge, derived views.** README, résumés and PDFs present the profile; they are not independent sources of truth.
+- **Local instructions are reviewable configuration.** `.trayector/` can evolve from upstream defaults without losing profile-specific customization.
 - **Structure over imposed taxonomy.** The profile owner controls vocabularies that are personal or contextual.
 - **Do not duplicate derivable information.** Paths and filenames should carry information when they can do so reliably.
 - **Plain data over descriptive wrappers.** Do not add metadata ceremony that contributes no meaning.
@@ -277,8 +207,6 @@ The initial focus is deliberately simple:
 Trayector is licensed under the **Apache License 2.0**.
 
 The specification and reference implementation are intentionally open and may be adopted by individuals, companies, platforms and tools under the terms of that license.
-
-The goal is adoption and portability: if a platform wants to support Trayector profiles, it should be able to do so.
 
 See [`LICENSE`](LICENSE).
 
