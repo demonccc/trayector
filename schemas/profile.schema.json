@@ -8,6 +8,14 @@
     "trayector_version": {
       "type": "string"
     },
+    "trayector": {
+      "type": "object",
+      "properties": {
+        "instructions": { "type": "string" },
+        "profile_kit_version": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
     "profile": {
       "type": "object",
       "required": ["name"],
@@ -25,11 +33,14 @@
         "summary": { "type": "string" },
         "timeline": { "type": "string" },
         "capabilities": { "type": "string" },
+        "education": { "type": "string" },
+        "feedback": { "type": "string" },
         "experience": { "type": "string" },
         "deep_dives": { "type": "string" },
         "projects": { "type": "string" },
         "stories": { "type": "string" },
-        "content": { "type": "string" }
+        "content": { "type": "string" },
+        "generated": { "type": "string" }
       },
       "additionalProperties": true
     }
