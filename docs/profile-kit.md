@@ -27,17 +27,43 @@ A repository should be self-describing enough that an agent can:
 - generate a tailored résumé without inventing facts;
 - render a PDF from the reviewed résumé source when its environment supports PDF generation.
 
-`profile.json` can expose the instruction entry point:
+`profile.json` can expose the instruction entry point and local release metadata:
 
 ```json
 {
   "trayector_version": "0.1",
   "trayector": {
     "instructions": ".trayector/README.md",
-    "profile_kit_version": ".trayector/VERSION"
+    "profile_kit_version": ".trayector/VERSION",
+    "profile_kit_ref": ".trayector/REF"
   }
 }
 ```
+
+## Version and release reference
+
+Every installed Profile Kit SHOULD contain both:
+
+```text
+.trayector/VERSION
+.trayector/REF
+```
+
+`VERSION` identifies the Profile Kit/specification version, for example:
+
+```text
+0.1.0
+```
+
+`REF` identifies the exact Trayector release tag the local kit is based on, for example:
+
+```text
+v0.1.0
+```
+
+Trayector uses Git tags as released Profile Kit baselines. A profile therefore knows both the semantic version it implements and the upstream release it was derived from.
+
+The release tag is also the three-way merge baseline for future updates. Released tags SHOULD be treated as immutable.
 
 ## Local and customizable
 
@@ -70,13 +96,13 @@ A profile repository installs it as:
 
 The update is **manual only** through `workflow_dispatch`.
 
-The repository owner chooses when to check and propose an update. There is no scheduled background update.
+The repository owner chooses when to update and explicitly supplies the target Trayector release tag, such as `v0.2.0`. There is no scheduled background update and the updater does not follow `main` as a release source.
 
 The workflow performs a three-way comparison using:
 
-1. the previously accepted Trayector commit stored in `.trayector/UPSTREAM`;
-2. the current local `.trayector/` files, including any custom modifications;
-3. the newly selected Trayector upstream ref, normally `main`.
+1. the previously accepted Trayector release stored in `.trayector/REF`;
+2. the current local `.trayector/` files, including custom modifications;
+3. the newly selected Trayector release tag.
 
 This lets the workflow distinguish:
 
@@ -96,9 +122,9 @@ When the same instruction changed locally and upstream and cannot be merged safe
 - the local file remains untouched;
 - the incoming candidate is written under `.trayector/.update/incoming/`;
 - `.trayector/.update/README.md` explains what needs review;
-- `.trayector/UPSTREAM` is not advanced automatically.
+- `.trayector/REF` and `.trayector/VERSION` are not advanced automatically.
 
-The profile owner resolves the conflict in the pull request, removes `.trayector/.update/`, updates `.trayector/UPSTREAM` to the proposed Trayector commit, and only then merges.
+The profile owner resolves the conflict in the pull request, removes `.trayector/.update/`, updates `REF` and `VERSION` to the selected release, and only then merges.
 
 This makes custom instructions first-class and reviewable rather than temporary local deviations.
 
@@ -117,8 +143,9 @@ An AI entering a Trayector profile should:
 1. read `profile.json`;
 2. follow `trayector.instructions` when present;
 3. read `.trayector/README.md` and the referenced rules;
-4. treat those local instructions as authoritative for this profile unless they contradict required Trayector semantics;
-5. traverse canonical career knowledge using `profile.json` navigation;
-6. generate or update derived views only after understanding the canonical profile.
+4. read `.trayector/VERSION` and `.trayector/REF` when provenance matters;
+5. treat the local instructions as authoritative for this profile unless they contradict required Trayector semantics;
+6. traverse canonical career knowledge using `profile.json` navigation;
+7. generate or update derived views only after understanding the canonical profile.
 
 This makes the repository itself the handoff between Trayector and whatever AI system is used.
