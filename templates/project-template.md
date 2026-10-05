@@ -1,11 +1,10 @@
 ---
-id: [Stable project ID] [e.g., home-kubernetes-lab]
+id: project-example
 type: project
-category: [Category] [e.g., personal-lab / open-source / research]
-period: [Period] [e.g., 2025-present]
-status: [active / completed / archived]
-capabilities:
-  - [Capability ID]
+category: personal-lab
+period: "YYYY-present"
+status: active
+capabilities: []
 ---
 
 # [Project Name]
@@ -26,7 +25,14 @@ capabilities:
 [What worked, what failed, and what you learned]
 
 ## Evidence
-[Repository, screenshots, diagrams, posts, demos or descriptive evidence]
+
+- [Repository, demo, screenshot, diagram, article, or other evidence]
+- [Additional evidence]
+
+## Sources
+
+- [Source document, public link, repository, or note]
+- [Additional source]
 
 ## Tech Stack
 [Technologies, protocols, runtimes, hardware and tooling]
