@@ -18,7 +18,7 @@ experience:
   enabled: true
 cv:
   enabled: false
-  profile: general
+  selected: general
 ```
 
 The profile installs `templates/github/publish.yml` as `.github/workflows/publish.yml`. It invokes `demonccc/trayector/.github/workflows/publish.yml@v0.1.0`. This release must exist before the workflow can execute.
@@ -33,7 +33,7 @@ On each push to main, the workflow:
 
 The default builder strips unsafe embedded HTML and excludes draft/private articles. The site is intentionally minimal; it does not currently provide rich image handling, semantic content filtering, link rewriting or multilingual navigation. These limitations must be addressed before describing it as production-ready.
 
-The default site can publish an **existing** `generated/cv/general.pdf` if `cv.enabled` is true. It does not generate a PDF or infer missing facts. A missing configured PDF is a build error. Building CVs from the canonical profile remains separate work.
+The default site reads the selected CV from `cv/<selected>.md`, renders a page and a text-based PDF, and never calls an AI. The source Markdown must already be reviewed. The initial PDF renderer is intentionally simple and needs typography and ATS tests.
 
 The owner can replace the caller workflow entirely to host elsewhere, use a custom site or create separate publication jobs. No theme/provider interface is imposed.
 
