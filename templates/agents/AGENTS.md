@@ -1,10 +1,10 @@
 # Trayector Career as Code
 
-Profile: `PROFILE.md`
+Professional profile: `PROFILE.md`
 
 AI instructions:
-1. Read `.trayector/ia/ACTIVE` to identify the selected version.
-2. Read `.trayector/ia/<active-version>/index.md`.
-3. Read `.trayector/ia/custom/index.md` if it exists.
+1. Read `.trayector/settings/trayector.yaml` and obtain `ia.version`.
+2. Read `.trayector/ia/<ia.version>/index.md`.
+3. Follow the applicable procedures before reading, creating or modifying career knowledge.
 
-Follow the relevant procedures before reading, creating or modifying professional information. Never treat this adapter as a source of career facts.
+These instructions do not automatically load custom AI files. Profile owners may manage their own agent-specific instructions independently.
