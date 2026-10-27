@@ -1,71 +1,42 @@
-# Optional website and publishing
+# Publishing a Trayector profile
 
-Trayector is a Career as Code template based on career-profile-spec. Canonical professional information remains in the profile repository, versioned by Git and understandable by AI regardless of public publishing.
+The official site is implemented in `site/` inside **demonccc/trayector**, not copied to personal profiles. The default site is a reference implementation, not a theme framework.
 
-Trayector ships **one editable example**, not a website framework or deployment-provider architecture.
-
-## Repository-owned implementation
-
-After installing the template, a profile may contain:
-
-```text
-.trayector/
-├── settings/
-│   └── site.yaml
-└── site/
-    ├── pages/
-    ├── components/
-    ├── styles/
-    ├── assets/
-    └── scripts/
-.github/
-└── workflows/
-    └── publish.yml
-```
-
-`.trayector/site/` contains the default site implementation; `.github/workflows/publish.yml` owns the entire example build and deployment flow to GitHub Pages. Both belong to the profile owner, who is free to modify or replace them. The folder breakdown is illustrative and may depend on the selected implementation.
-
-There is **no mandatory theme system, renderer interface, deployment provider registry, or plugin contract**. Users may adopt another framework, customize the default implementation, publish elsewhere, or maintain their own workflows. Trayector does not claim to support every customization.
-
-## Optional site configuration
-
-The Profile Kit supplies `profile-kit/settings/site.yaml`, installed as `.trayector/settings/site.yaml`:
+A personal profile contains canonical Markdown and these settings:
 
 ```yaml
-enabled: false
+# .trayector/settings/trayector.yaml
+version: 0.1.0
+```
 
+```yaml
+# .trayector/settings/site.yaml
+enabled: false
 articles:
   enabled: true
-
 experience:
   enabled: true
-
 cv:
-  enabled: true
+  enabled: false
   profile: general
 ```
 
-- `enabled` is the switch for the **example** website workflow.
-- `articles.enabled` controls the article section on that site, not whether content is stored or versioned.
-- `experience.enabled` controls the experience section on that site, not whether experience exists in the profile.
-- `cv.enabled` controls whether that site exposes the general CV; `profile` selects the CV generation profile.
-- There is no `ai.enabled`: AI readability is intrinsic to Career as Code.
-- There is no `deployment.provider`: publication lives in the editable GitHub Actions workflow, not in the data settings.
+The profile installs `templates/github/publish.yml` as `.github/workflows/publish.yml`. It invokes `demonccc/trayector/.github/workflows/publish.yml@v0.1.0`. This release must exist before the workflow can execute.
 
-## Default workflow
+On each push to main, the workflow:
 
-The example `publish.yml` should trigger on pushes to `main` (optionally also manually), read `site.yaml`, and, when enabled, build a clean site from the canonical profile and publish it with GitHub Pages. Only enabled sections should be included. Rebuilding cleanly avoids retaining pages for disabled sections.
+1. Checks out the caller profile.
+2. Checks out **the exact SHA that contains the called reusable workflow**, using `job.workflow_repository` and `job.workflow_sha`. No use of Trayector main or the caller's ref for site assets.
+3. Checks the workflow's tag and the version declared in `.trayector/settings/trayector.yaml`.
+4. If publishing is enabled, renders `PROFILE.md`, experience and content Markdown through the release's static site implementation.
+5. Publishes the clean static output to GitHub Pages.
 
-Disabling a deployment workflow does **not** automatically take down previously published content. Removing an existing site must be handled explicitly.
+The default builder strips unsafe embedded HTML and excludes draft/private articles. The site is intentionally minimal; it does not currently provide rich image handling, semantic content filtering, link rewriting or multilingual navigation. These limitations must be addressed before describing it as production-ready.
 
-The website and CV remain derived views. They must not introduce new professional claims or become competing sources of career truth. The configured CV profile must exist; targeted/private CVs are not published automatically.
+The default site can publish an **existing** `generated/cv/general.pdf` if `cv.enabled` is true. It does not generate a PDF or infer missing facts. A missing configured PDF is a build error. Building CVs from the canonical profile remains separate work.
 
-## Beyond the default
+The owner can replace the caller workflow entirely to host elsewhere, use a custom site or create separate publication jobs. No theme/provider interface is imposed.
 
-A profile owner may create separate workflows, for example `publish-articles.yml` that runs only for changes under `content/articles/**`, or deploy a custom site to another hosting service. Those choices need no registration with Trayector and require no changes to career-profile-spec.
+A manual `update-trayector.yml` proposes a PR that installs the target version's skills, updates `trayector.yaml`, and changes the official publish workflow reference to the same tag. Nothing updates automatically.
 
-The only durable boundary: custom publishing code can read canonical profile content but should not mix visual/layout data into the canonical career facts.
-
-## Implementation status
-
-This change establishes the configuration and ownership model. The sample site implementation and functional `publish.yml` still need to be developed and tested; the configuration alone does not publish a website.
+**Implementation status:** the renderer and workflows are implemented in the feature branch but must be tested on a tagged release and a real calling profile before publishing is enabled in the distributed template.
