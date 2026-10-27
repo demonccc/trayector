@@ -76,8 +76,11 @@ The default Profile Kit includes:
 ```text
 .trayector/settings/
 ├── languages.yaml
-└── classifications.yaml
+├── classifications.yaml
+└── site.yaml
 ```
+
+`site.yaml` configures an optional public presentation and its deployment adapter. It does not disable any Career as Code or AI-readable capability. See [Site and Publishing](site-publishing.md).
 
 A profile MAY add more settings files when a real configurable concern appears.
 
