@@ -6,6 +6,6 @@ The reusable workflow checks out the exact commit defining the invoked workflow 
 
 The builder reads `PROFILE.md`, relevant Markdown under `experience/` and `content/`, and the optional `.trayector/settings/site.yaml`. It writes a clean static directory. It does **not** modify canonical information.
 
-The default build publishes an existing general PDF only when it is explicitly configured and present. CV generation from canonical facts is a separate task; do not silently generate an unsupported CV.
+The builder renders the selected `cv/<selected>.md` to a public CV page and downloadable text-based PDF. It never rewrites the CV with AI.
 
 The owner can replace the caller workflow or use another website project at any time.
