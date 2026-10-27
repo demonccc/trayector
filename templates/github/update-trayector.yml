@@ -1,4 +1,4 @@
-name: Update Trayector Profile Kit
+name: Update Trayector AI instructions
 
 on:
   workflow_dispatch:
@@ -61,10 +61,16 @@ jobs:
               echo "Current Trayector baseline tag '$base_tag' was not found upstream." >&2
               exit 1
             fi
-            git -C "$repo" archive "$base_tag" profile-kit | tar -x -C "$base_dir"
+            if ! git -C "$repo" archive "$base_tag" profile-kit/ai | tar -x -C "$base_dir"; then
+              echo "Baseline $base_tag predates isolated AI instructions. Migrate the existing kit before updating." >&2
+              exit 1
+            fi
           fi
 
-          git -C "$repo" archive "$new_tag" profile-kit | tar -x -C "$new_dir"
+          if ! git -C "$repo" archive "$new_tag" profile-kit/ai profile-kit/VERSION | tar -x -C "$new_dir"; then
+            echo "Release $new_tag has no isolated AI instructions." >&2
+            exit 1
+          fi
 
           kit_version="$(tr -d '[:space:]' < "$new_dir/profile-kit/VERSION")"
           if [ "$kit_version" != "$NEW_VERSION" ]; then
@@ -86,10 +92,10 @@ jobs:
         run: |
           set -euo pipefail
 
-          local_dir=".trayector"
-          base_dir=".trayector-update/base/profile-kit"
-          new_dir=".trayector-update/new/profile-kit"
-          review_dir="$local_dir/.update"
+          local_dir=".trayector/ai"
+          base_dir=".trayector-update/base/profile-kit/ai"
+          new_dir=".trayector-update/new/profile-kit/ai"
+          review_dir=".trayector/.update"
           incoming_dir="$review_dir/incoming"
           report="$review_dir/README.md"
 
@@ -110,7 +116,7 @@ jobs:
             {
               if [ -d "$base_dir" ]; then find "$base_dir" -type f -printf '%P\n'; fi
               if [ -d "$new_dir" ]; then find "$new_dir" -type f -printf '%P\n'; fi
-            } | grep -v '^VERSION$' | sort -u
+            } | sort -u
           )
 
           for path in "${paths[@]}"; do
@@ -198,7 +204,7 @@ jobs:
             cat > "$report" <<EOF
           # Trayector update requires review
 
-          The local Profile Kit contains customizations that could not be safely reconciled automatically.
+          The local AI instruction kit contains customizations that could not be safely reconciled automatically.
 
           - Previous version: ${BASE_VERSION:-unknown}
           - Proposed version: $NEW_VERSION
@@ -248,7 +254,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git checkout -B "$branch"
-          git add .trayector
+          git add .trayector/ai .trayector/VERSION .trayector/.update
           git commit -m "chore: propose Trayector $NEW_VERSION profile kit update"
 
           git fetch origin "$branch" 2>/dev/null || true
@@ -257,7 +263,7 @@ jobs:
           if [ "$HAS_CONFLICTS" = "true" ]; then
             body="Trayector Profile Kit update to \`$NEW_VERSION\` (\`$NEW_TAG\`) requires manual conflict resolution. Local customizations were preserved. Review \`.trayector/.update/README.md\`, resolve the affected files, remove \`.trayector/.update/\`, and update \`.trayector/VERSION\` before merging."
           else
-            body="Proposes a three-way update of the local Trayector Profile Kit to \`$NEW_VERSION\` (\`$NEW_TAG\`). Local customizations that do not conflict with upstream changes are preserved. Review the diff before merging."
+            body="Proposes a three-way update of the local Trayector AI instructions to \`$NEW_VERSION\` (\`$NEW_TAG\`). Local customizations that do not conflict with upstream changes are preserved. Review the diff before merging."
           fi
 
           existing="$(gh pr list --head "$branch" --state open --json number --jq '.[0].number // empty')"
@@ -266,7 +272,7 @@ jobs:
             gh pr create \
               --base "${{ github.event.repository.default_branch }}" \
               --head "$branch" \
-              --title "Update Trayector profile instructions to $NEW_VERSION" \
+              --title "Update Trayector AI instructions to $NEW_VERSION" \
               --body "$body"
           else
             gh pr edit "$existing" --title "Update Trayector profile instructions to $NEW_VERSION" --body "$body"
