@@ -55,6 +55,12 @@ A profile may also include a small `TRAYECTOR.md` file that identifies the Traye
 
 See [Profile Views](spec/profile-views.md).
 
+## Optional public site
+
+Trayector profiles may opt into a static public site for articles, experience, and a general downloadable CV. Configure its sections and deployment provider through `.trayector/settings/site.yaml`. This is an optional presentation layer; canonical career knowledge, Git history, and AI-readable profile structure remain available even when no website is published.
+
+See [Site and Publishing](docs/site-publishing.md) for the configuration and extension contract. The site builder and publishing workflow are planned, not yet implemented.
+
 ## Local AI instructions
 
 A Trayector profile can carry a local Profile Kit under `.trayector/`.
