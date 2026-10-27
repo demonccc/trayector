@@ -1,20 +1,24 @@
-# Trayector AI instructions and updates
+# Trayector IA instructions and updates
 
-Career facts belong in canonical profile documents, not in .trayector. PROFILE.md is the profile entry point.
+The canonical profile entry point is `PROFILE.md`. The same agent discovery rule is installed in `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` and `.github/copilot-instructions.md`:
 
-All agent adapters (AGENTS.md, CLAUDE.md, GEMINI.md and .github/copilot-instructions.md) use the same discovery steps:
+1. Read `PROFILE.md`.
+2. Read `.trayector/settings/trayector.yaml` to resolve `ia.version`.
+3. Read `.trayector/ia/<ia.version>/index.md` and its relevant operational procedures.
 
-1. Read PROFILE.md.
-2. Read .trayector/ia/ACTIVE.
-3. Read .trayector/ia/<active-version>/index.md and relevant procedures.
-4. Read .trayector/ia/custom/index.md if present.
-
-The versioned instructions explain how to read, create, modify, connect and validate canonical career knowledge. They are not an embeddings index. Agent hosts vary in whether they automatically detect their adapter.
+The versioned instruction set teaches agents to read, add, change, link, and validate career information. Version folders are read-only released content. User custom AI instructions are managed independently, are not automatically loaded by Trayector, and cannot be overwritten by its updater.
 
 ## Updating
 
-Versioned instructions are immutable. The manually invoked update-trayector.yml fetches one released tag's profile-kit/ia/<version>/ and opens a PR with only the new version directory. It does not modify ACTIVE, custom instructions, older versions, settings, site or career data. Activation is an explicit subsequent change to ACTIVE.
+The manual `update-trayector.yml` workflow fetches a selected immutable release folder `profile-kit/ia/<version>/` and opens a PR. The workflow only installs the requested folder. It never modifies `.trayector/settings/trayector.yaml`, previously installed versions, professional content, site code, or user-specific instructions.
 
-Local custom instructions can extend behavior but should not contradict career-profile-spec or source-fidelity rules. Public-site code and publishing workflows remain independent and user-owned.
+A user may activate a newly installed version by explicitly changing `ia.version` in `.trayector/settings/trayector.yaml`.
 
-The 0.1.0 directory is a development example. A corresponding release tag must exist and be tested before updates can use it.
+Example:
+
+```yaml
+ia:
+  version: 0.1.0
+```
+
+The `0.1.0` layout is currently an unreleased example; tagged releases must be published and verified before using the updater.
