@@ -55,6 +55,7 @@ my-career/
 │   │       ├── experience.md
 │   │       └── content.md
 │   ├── settings/
+│   │   └── trayector.yaml
 │   └── site/
 ├── profile/
 ├── experience/
@@ -64,7 +65,7 @@ my-career/
 
 `PROFILE.md` is the navigation entry point for professional facts. Copy the versioned AI instructions from `profile-kit/ia/0.1.0/` into `.trayector/ia/0.1.0/`. Set `.trayector/settings/trayector.yaml` with `ia.version: 0.1.0`. Install identical agent adapters from `templates/agents/` and the manual updater from `templates/github/update-trayector.yml`. New instruction releases install alongside old versions and are activated explicitly.
 
-## 5. Configure the profile
+## 4. Configure the profile
 
 Profile-owned configuration lives under:
 
@@ -94,43 +95,29 @@ technical-note: Nota técnica enfocada en un tema concreto
 
 The keys are intentionally owner-defined. A profile can rename, remove or extend them.
 
-## 6. Add the machine-readable entry point
+## 5. Create the professional entry point
 
-`PROFILE.md` tells tools where the important parts of the repository live and where local Trayector instructions and settings can be found.
+`PROFILE.md` is a Markdown navigation document for the professional profile. It should describe the person and link to relevant career knowledge, without duplicating Trayector's AI instructions or implementation/version metadata.
 
-Example:
+```markdown
+# Professional Profile
 
-```json
-{
-  "trayector_version": "0.1",
-  "trayector": {
-    "instructions": ".trayector/ia/<active-version>/index.md",
-    "profile_kit_version": ".trayector/VERSION",
-    "settings": ".trayector/settings/"
-  },
-  "profile": {
-    "name": "Alex Example",
-    "headline": "Engineering Manager and distributed-systems practitioner",
-    "location": "Remote"
-  },
-  "navigation": {
-    "summary": "profile/summary.md",
-    "timeline": "profile/career-timeline.md",
-    "capabilities": "profile/capabilities.md",
-    "experience": "experience/",
-    "deep_dives": "deep-dives/",
-    "projects": "projects/",
-    "stories": "stories/",
-    "feedback": "feedback/",
-    "content": "content/",
-    "generated": "generated/"
-  }
-}
+## Identity
+- Name: Alex Example
+- Headline: Engineering Manager
+
+## Career Knowledge
+- [Summary](profile/summary.md)
+- [Timeline](profile/career-timeline.md)
+- [Capabilities](profile/capabilities.md)
+- [Experience](experience/)
+- [Projects](projects/)
+- [Publications](content/)
 ```
 
-An AI entering the repository should read `PROFILE.md`, follow `trayector.instructions`, read the relevant files under `trayector.settings`, then traverse canonical career knowledge through `navigation`.
+Agent adapters handle AI instruction discovery independently: they read `.trayector/settings/trayector.yaml` for the active `ia.version` and then load that version's `index.md`.
 
-## 7. Build the canonical profile before the README
+## 6. Build the canonical profile before the README
 
 Start with the knowledge itself:
 
