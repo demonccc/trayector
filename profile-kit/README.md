@@ -44,10 +44,15 @@ Typical examples are:
 ```text
 .trayector/settings/
 ├── languages.yaml
-└── classifications.yaml
+├── classifications.yaml
+└── site.yaml
 ```
 
 Profiles may add more settings files when a new configurable area is needed. Do not create configuration files preemptively when there is nothing to configure yet.
+
+## Optional public site
+
+The existing AI instructions (`README.md`, `profile-rules.md`, and `resume-generation.md`) remain the always-present core of `.trayector/`. An optional `.trayector/site/` contains editable site code; `.github/workflows/publish.yml` may build and publish it. Editing or disabling the website MUST NOT remove, disable, or overwrite AI guidance and the canonical reading rules.
 
 ## Version
 
