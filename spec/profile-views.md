@@ -106,3 +106,7 @@ An AI generating or updating a README or résumé SHOULD:
 8. use the selected presentation template as guidance, not as a source of career facts.
 
 This keeps AI in the role of interpreter and compiler rather than source of professional truth.
+
+## Optional public website
+
+An optional static site may present articles, experience, and a general downloadable CV. Configuration is profile-owned under `.trayector/settings/site.yaml`, while canonical documents remain the only source of truth. Rendering and deployment are distinct stages, with an extensible deployment provider. See [Site and Publishing](../docs/site-publishing.md). The builder and deployment workflows are not yet implemented.
