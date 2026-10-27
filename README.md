@@ -59,7 +59,7 @@ See [Profile Views](spec/profile-views.md).
 
 Trayector profiles may opt into a static public site for articles, experience, and a general downloadable CV. Configure its sections through `.trayector/settings/site.yaml`; edit `.trayector/site/` to change the website and `.github/workflows/publish.yml` to change publishing. This is an optional presentation layer; canonical career knowledge, Git history, and AI-readable profile structure remain available even when no website is published.
 
-See [Site and Publishing](docs/site-publishing.md) for the user-owned example and customization approach. The site builder and publishing workflow are planned, not yet implemented.
+See [Site and Publishing](docs/site-publishing.md) for the user-owned example and customization approach. The reference site renderer and reusable publish workflow are now included in the repository; deployment still requires a tagged release and end-to-end testing.
 
 ## Local AI instructions
 
@@ -226,3 +226,7 @@ Issues and pull requests are welcome.
 ## AI discovery and updates
 
 The canonical profile starts at `PROFILE.md`. Agent entry files (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, and Copilot instructions) all direct agents to `.trayector/settings/trayector.yaml` and the selected `.trayector/skills/<version>/index.md`; local extensions remain in `.trayector/skills/custom/`. Updating Trayector AI installs only a new immutable version directory by PR and does not change the active version or site customizations.
+
+## Publishing implementation
+
+The default HTML/CSS and Markdown renderer live in [`site/`](site/). Profiles call the release-pinned reusable [publish workflow](.github/workflows/publish.yml) using the small caller template at [`templates/github/publish.yml`](templates/github/publish.yml). The reusable workflow checks out its own exact release SHA, ensuring the workflow and static assets match. Publishing is opt-in and the default CV download requires an existing PDF. See [Publishing](docs/site-publishing.md).
