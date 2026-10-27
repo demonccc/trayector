@@ -1,0 +1,15 @@
+# Optional public site; Career as Code and AI readability remain always available.
+enabled: false
+
+articles:
+  enabled: true
+
+experience:
+  enabled: true
+
+cv:
+  enabled: true
+  profile: general
+
+deployment:
+  provider: github-pages
