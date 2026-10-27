@@ -23,21 +23,23 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.repository.default_branch }}
-      - name: Download selected release skills
+      - name: Download selected release bundle
         env:
           VERSION: ${{ inputs.trayector_version }}
         shell: bash
         run: |
           set -euo pipefail
           [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Invalid version" >&2; exit 1; }
-          source_path="profile-kit/skills/$VERSION"
-          destination=".trayector/skills/$VERSION"
+          source_path="profile-kit/versions/$VERSION"
+          destination=".trayector/versions/$VERSION"
           tag="v$VERSION"
           git clone --filter=blob:none --no-checkout https://github.com/demonccc/trayector.git /tmp/trayector-upstream
           git -C /tmp/trayector-upstream fetch --depth=1 origin "refs/tags/$tag:refs/tags/$tag"
           mkdir -p /tmp/trayector-incoming
           git -C /tmp/trayector-upstream archive "$tag" "$source_path" | tar -xf - -C /tmp/trayector-incoming
-          test -f "/tmp/trayector-incoming/$source_path/index.md"
+          test -f "/tmp/trayector-incoming/$source_path/skills/index.md"
+          test -f "/tmp/trayector-incoming/$source_path/templates/profile.md"
+          test -f "/tmp/trayector-incoming/$source_path/templates/resumes/basic.md"
           if [ -e "$destination" ]; then
             diff -qr "$destination" "/tmp/trayector-incoming/$source_path" || {
               echo "Existing version differs from immutable upstream release. Not overwriting." >&2
@@ -75,7 +77,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [ -z "$(git status --porcelain -- .trayector/skills/ .trayector/settings/trayector.yaml .github/workflows/publish.yml)" ]; then
+          if [ -z "$(git status --porcelain -- .trayector/versions/ .trayector/settings/trayector.yaml .github/workflows/publish.yml)" ]; then
             echo "Trayector release already installed; nothing to propose."
             exit 0
           fi
@@ -83,10 +85,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -B "$branch"
-          git add -- ".trayector/skills/$VERSION" .trayector/settings/trayector.yaml
+          git add -- ".trayector/versions/$VERSION" .trayector/settings/trayector.yaml
           if [ -f .github/workflows/publish.yml ]; then git add -- .github/workflows/publish.yml; fi
           git commit -m "chore: update Trayector release to $VERSION"
           git push --force-with-lease origin "$branch"
-          gh pr create --base "${{ github.event.repository.default_branch }}" --head "$branch" --title "Update Trayector to $VERSION" --body "Installs immutable skills $VERSION and aligns declared Trayector version plus official publish reference. Review before merging; customized workflows may require manual resolution." || {
+          gh pr create --base "${{ github.event.repository.default_branch }}" --head "$branch" --title "Update Trayector to $VERSION" --body "Installs immutable skills and templates $VERSION and aligns declared Trayector version plus official publish reference. Review before merging; customized workflows may require manual resolution." || {
             gh pr list --head "$branch" --state open
           }
