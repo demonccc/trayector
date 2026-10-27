@@ -80,7 +80,7 @@ The default Profile Kit includes:
 └── site.yaml
 ```
 
-`site.yaml` configures an optional public presentation and its deployment adapter. It does not disable any Career as Code or AI-readable capability. See [Site and Publishing](site-publishing.md).
+`site.yaml` configures the optional public presentation. Publishing logic belongs to the editable `.github/workflows/publish.yml`, not to a deployment adapter. It does not disable any Career as Code or AI-readable capability. See [Site and Publishing](site-publishing.md).
 
 A profile MAY add more settings files when a real configurable concern appears.
 
