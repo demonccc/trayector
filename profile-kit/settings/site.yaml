@@ -1,4 +1,4 @@
-# Optional public site; Career as Code and AI readability remain always available.
+# Optional website, built and published by the repository-owned workflow.
 enabled: false
 
 articles:
@@ -10,6 +10,3 @@ experience:
 cv:
   enabled: true
   profile: general
-
-deployment:
-  provider: github-pages
