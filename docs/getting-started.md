@@ -49,8 +49,6 @@ my-career/
 │       └── publish.yml
 ├── .trayector/
 │   ├── ia/
-│   │   ├── ACTIVE
-│   │   ├── custom/index.md
 │   │   └── 0.1.0/
 │   │       ├── index.md
 │   │       ├── profile-rules.md
@@ -64,7 +62,7 @@ my-career/
 └── content/
 ```
 
-`PROFILE.md` is the navigation entry point for professional facts. Copy the versioned AI instructions from `profile-kit/ia/0.1.0/` into `.trayector/ia/0.1.0/`. Set `.trayector/ia/ACTIVE` to `0.1.0`. Install identical agent adapters from `templates/agents/` and the manual updater from `templates/github/update-trayector.yml`. New instruction releases install alongside old versions and are activated explicitly.
+`PROFILE.md` is the navigation entry point for professional facts. Copy the versioned AI instructions from `profile-kit/ia/0.1.0/` into `.trayector/ia/0.1.0/`. Set `.trayector/settings/trayector.yaml` with `ia.version: 0.1.0`. Install identical agent adapters from `templates/agents/` and the manual updater from `templates/github/update-trayector.yml`. New instruction releases install alongside old versions and are activated explicitly.
 
 ## 5. Configure the profile
 
