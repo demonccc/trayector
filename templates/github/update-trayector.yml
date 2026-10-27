@@ -1,4 +1,4 @@
-name: Update Trayector AI instructions
+name: Update Trayector skills
 
 on:
   workflow_dispatch:
@@ -30,8 +30,8 @@ jobs:
         run: |
           set -euo pipefail
           [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Invalid version" >&2; exit 1; }
-          source_path="profile-kit/ia/$VERSION"
-          destination=".trayector/ia/$VERSION"
+          source_path="profile-kit/skills/$VERSION"
+          destination=".trayector/skills/$VERSION"
           tag="v$VERSION"
           git clone --filter=blob:none --no-checkout https://github.com/demonccc/trayector.git /tmp/trayector-upstream
           git -C /tmp/trayector-upstream fetch --depth=1 origin "refs/tags/$tag:refs/tags/$tag"
@@ -55,7 +55,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [ -z "$(git status --porcelain -- .trayector/ia/)" ]; then
+          if [ -z "$(git status --porcelain -- .trayector/skills/)" ]; then
             echo "AI version already installed; nothing to propose."
             exit 0
           fi
@@ -63,9 +63,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -B "$branch"
-          git add -- ".trayector/ia/$VERSION"
-          git commit -m "chore: install Trayector AI instructions $VERSION"
+          git add -- ".trayector/skills/$VERSION"
+          git commit -m "chore: install Trayector skills $VERSION"
           git push --force-with-lease origin "$branch"
-          gh pr create --base "${{ github.event.repository.default_branch }}" --head "$branch" --title "Install Trayector AI instructions $VERSION" --body "Adds immutable version $VERSION only. ACTIVE and user-managed instructions remain unchanged. Review and activate separately." || {
+          gh pr create --base "${{ github.event.repository.default_branch }}" --head "$branch" --title "Install Trayector skills $VERSION" --body "Adds immutable version $VERSION only. ACTIVE and user-managed instructions remain unchanged. Review and activate separately." || {
             gh pr list --head "$branch" --state open
           }
