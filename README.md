@@ -225,4 +225,4 @@ Issues and pull requests are welcome.
 
 ## AI discovery and updates
 
-The canonical profile starts at `PROFILE.md`. Agent entry files (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, and Copilot instructions) all direct agents to `.trayector/settings/trayector.yaml` and the selected `.trayector/ia/<version>/index.md`; local extensions remain in `.trayector/ia/custom/`. Updating Trayector AI installs only a new immutable version directory by PR and does not change the active version or site customizations.
+The canonical profile starts at `PROFILE.md`. Agent entry files (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, and Copilot instructions) all direct agents to `.trayector/settings/trayector.yaml` and the selected `.trayector/skills/<version>/index.md`; local extensions remain in `.trayector/skills/custom/`. Updating Trayector AI installs only a new immutable version directory by PR and does not change the active version or site customizations.
