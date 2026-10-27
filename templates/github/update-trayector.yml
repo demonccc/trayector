@@ -58,7 +58,7 @@ jobs:
           version=os.environ["VERSION"]
           settings=pathlib.Path(".trayector/settings/trayector.yaml")
           data=settings.read_text()
-          new,n=re.subn(r"(?m)^version:\s*[^\\n]+$", "version: "+version, data)
+          new,n=re.subn(r"(?m)^version:.*$", "version: "+version, data)
           if n!=1: raise SystemExit("Expected a top-level version in trayector.yaml")
           settings.write_text(new)
           caller=pathlib.Path(".github/workflows/publish.yml")
@@ -76,7 +76,7 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "$(git status --porcelain -- .trayector/skills/ .trayector/settings/trayector.yaml .github/workflows/publish.yml)" ]; then
-            echo "AI version already installed; nothing to propose."
+            echo "Trayector release already installed; nothing to propose."
             exit 0
           fi
           branch="trayector/update-$VERSION"
