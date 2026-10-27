@@ -124,7 +124,7 @@ A typical profile looks like this:
 my-career/
 ├── README.md
 ├── TRAYECTOR.md
-├── profile.json
+├── PROFILE.md
 ├── .trayector/
 │   ├── README.md
 │   ├── profile-rules.md
@@ -151,7 +151,7 @@ The recommended workflow is:
 
 1. collect source material such as CVs, LinkedIn data, project notes and repositories;
 2. install the local Trayector Profile Kit;
-3. create `profile.json` and configure profile-owned vocabulary under `.trayector/settings/`;
+3. create `PROFILE.md` and configure profile-owned vocabulary under `.trayector/settings/`;
 4. reconstruct canonical career knowledge from the sources;
 5. resolve contradictions instead of silently guessing;
 6. connect capabilities to real evidence;
@@ -222,3 +222,7 @@ Trayector should be shaped by real careers, not just by theoretical schemas.
 If the model cannot represent an important part of your professional experience without forcing it into the wrong concept, that is useful feedback.
 
 Issues and pull requests are welcome.
+
+## AI discovery and updates
+
+The canonical profile starts at `PROFILE.md`. Agent entry files (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, and Copilot instructions) all direct agents to `.trayector/ia/ACTIVE` and the selected `.trayector/ia/<version>/index.md`; local extensions remain in `.trayector/ia/custom/`. Updating Trayector AI installs only a new immutable version directory by PR and does not change the active version or site customizations.
