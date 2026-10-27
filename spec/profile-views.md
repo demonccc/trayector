@@ -15,7 +15,7 @@ Canonical knowledge lives in the profile's structured documents and relationship
 - `stories/`;
 - `feedback/` when present;
 - `content/`;
-- `profile.json` for machine-readable navigation.
+- `PROFILE.md` for machine-readable navigation.
 
 Profile configuration such as languages and classifications lives under `.trayector/settings/`. It helps tools interpret the profile, but it is not itself career knowledge.
 
@@ -80,7 +80,7 @@ Its purpose is to:
 - explain where the machine-readable entry point lives;
 - clarify that the README is a view rather than the model itself.
 
-`profile.json` remains the machine-readable declaration of the Trayector version and navigation entry point.
+`PROFILE.md` remains the machine-readable declaration of the Trayector version and navigation entry point.
 
 ## Generated and committed views
 
@@ -96,7 +96,7 @@ Regardless of how a view is created, it SHOULD be reproducible from canonical pr
 
 An AI generating or updating a README or résumé SHOULD:
 
-1. read `profile.json`;
+1. read `PROFILE.md`;
 2. follow `trayector.instructions` and read relevant configuration under `.trayector/settings/`;
 3. follow navigation into canonical profile areas;
 4. read the target role when generating a tailored résumé;
@@ -106,3 +106,7 @@ An AI generating or updating a README or résumé SHOULD:
 8. use the selected presentation template as guidance, not as a source of career facts.
 
 This keeps AI in the role of interpreter and compiler rather than source of professional truth.
+
+## Optional public website
+
+An optional static site may present articles, experience, and a general downloadable CV. Configuration is profile-owned under `.trayector/settings/site.yaml`, while canonical documents remain the only source of truth. The default site and the GitHub Actions publishing workflow are editable, repository-owned examples; no theme or provider interface is imposed. See [Site and Publishing](../docs/site-publishing.md). The builder and deployment workflows are not yet implemented.

@@ -55,6 +55,12 @@ A profile may also include a small `TRAYECTOR.md` file that identifies the Traye
 
 See [Profile Views](spec/profile-views.md).
 
+## Optional public site
+
+Trayector profiles may opt into a static public site for articles, experience, and a general downloadable CV. Configure its sections through `.trayector/settings/site.yaml`; edit `.trayector/site/` to change the website and `.github/workflows/publish.yml` to change publishing. This is an optional presentation layer; canonical career knowledge, Git history, and AI-readable profile structure remain available even when no website is published.
+
+See [Site and Publishing](docs/site-publishing.md) for the user-owned example and customization approach. The site builder and publishing workflow are planned, not yet implemented.
+
 ## Local AI instructions
 
 A Trayector profile can carry a local Profile Kit under `.trayector/`.
@@ -118,7 +124,7 @@ A typical profile looks like this:
 my-career/
 ├── README.md
 ├── TRAYECTOR.md
-├── profile.json
+├── PROFILE.md
 ├── .trayector/
 │   ├── README.md
 │   ├── profile-rules.md
@@ -145,7 +151,7 @@ The recommended workflow is:
 
 1. collect source material such as CVs, LinkedIn data, project notes and repositories;
 2. install the local Trayector Profile Kit;
-3. create `profile.json` and configure profile-owned vocabulary under `.trayector/settings/`;
+3. create `PROFILE.md` and configure profile-owned vocabulary under `.trayector/settings/`;
 4. reconstruct canonical career knowledge from the sources;
 5. resolve contradictions instead of silently guessing;
 6. connect capabilities to real evidence;
@@ -216,3 +222,7 @@ Trayector should be shaped by real careers, not just by theoretical schemas.
 If the model cannot represent an important part of your professional experience without forcing it into the wrong concept, that is useful feedback.
 
 Issues and pull requests are welcome.
+
+## AI discovery and updates
+
+The canonical profile starts at `PROFILE.md`. Agent entry files (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, and Copilot instructions) all direct agents to `.trayector/settings/trayector.yaml` and the selected `.trayector/ia/<version>/index.md`; local extensions remain in `.trayector/ia/custom/`. Updating Trayector AI installs only a new immutable version directory by PR and does not change the active version or site customizations.

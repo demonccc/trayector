@@ -111,7 +111,7 @@ A committed README can be regenerated as the canonical profile evolves.
 
 A profile MAY include a small `TRAYECTOR.md` file that explains which Trayector version it follows and points to the specification.
 
-`profile.json` remains the machine-readable entry point and declares `trayector_version`.
+`PROFILE.md` remains the machine-readable entry point and declares `trayector_version`.
 
 This keeps implementation details out of the public-facing profile index while preserving explicit compatibility information.
 
@@ -122,7 +122,7 @@ Once the canonical profile exists, an AI can also generate application-specific 
 For each tailored résumé, the AI SHOULD read:
 
 1. the target job description;
-2. the candidate's `profile.json` and relevant canonical profile documents;
+2. the candidate's `PROFILE.md` and relevant canonical profile documents;
 3. the selected résumé template, such as `templates/resume/basic.md`.
 
 The AI MAY select, reorder, summarize and emphasize supported information according to the role.
@@ -160,7 +160,7 @@ Create the canonical profile areas first. Build README.md last as a concise inde
 ```text
 Create a tailored résumé for the job description I provide.
 
-Use my Trayector profile as the only source of professional facts. Start at profile.json and read the relevant canonical profile documents.
+Use my Trayector profile as the only source of professional facts. Start at PROFILE.md and read the relevant canonical profile documents.
 
 Use the selected résumé template as presentation guidance.
 

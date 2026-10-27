@@ -4,7 +4,7 @@ A Trayector profile separates **canonical career knowledge** from **derived view
 
 ## Canonical areas
 
-Use `profile.json` as the machine-readable entry point and follow its navigation.
+Use `PROFILE.md` as the machine-readable entry point and follow its navigation.
 
 Canonical career knowledge normally lives in:
 
@@ -53,4 +53,4 @@ After changing canonical knowledge, derived views may need regeneration.
 
 For README generation, summarize and link to canonical material.
 
-For résumé generation, follow `resume-generation.md`.
+For résumé generation, follow `ai/resume-generation.md`.

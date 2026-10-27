@@ -33,67 +33,39 @@ professional-profile
 
 The repository name is yours. It does not need to contain `trayector`.
 
-## 3. Start with this structure
+## 3. Create a versioned AI setup
 
 ```text
 my-career/
 ├── README.md
-├── TRAYECTOR.md
-├── profile.json
-├── .trayector/
-│   ├── README.md
-│   ├── profile-rules.md
-│   ├── resume-generation.md
-│   ├── VERSION
-│   ├── settings/
-│   │   ├── languages.yaml
-│   │   └── classifications.yaml
-│   └── resume/
-│       └── basic.md
+├── PROFILE.md
+├── AGENTS.md
+├── CLAUDE.md
+├── GEMINI.md
 ├── .github/
+│   ├── copilot-instructions.md
 │   └── workflows/
-│       └── update-trayector.yml
+│       ├── update-trayector.yml
+│       └── publish.yml
+├── .trayector/
+│   ├── ia/
+│   │   └── 0.1.0/
+│   │       ├── index.md
+│   │       ├── profile-rules.md
+│   │       ├── experience.md
+│   │       └── content.md
+│   ├── settings/
+│   │   └── trayector.yaml
+│   └── site/
 ├── profile/
-│   ├── summary.md
-│   ├── career-timeline.md
-│   ├── capabilities.md
-│   └── education.md
 ├── experience/
-├── deep-dives/
 ├── projects/
-├── stories/
-├── feedback/
-├── content/
-└── generated/
+└── content/
 ```
 
-You do not need to use every canonical career directory. Add only what represents your career.
+`PROFILE.md` is the navigation entry point for professional facts. Copy the versioned AI instructions from `profile-kit/ia/0.1.0/` into `.trayector/ia/0.1.0/`. Set `.trayector/settings/trayector.yaml` with `ia.version: 0.1.0`. Install identical agent adapters from `templates/agents/` and the manual updater from `templates/github/update-trayector.yml`. New instruction releases install alongside old versions and are activated explicitly.
 
-`README.md` is a profile view and index. `TRAYECTOR.md` is an optional small implementation note. `profile.json` is the machine-readable entry point. `.trayector/` contains the local Trayector Profile Kit used by AI agents and profile tooling.
-
-## 4. Install the Trayector Profile Kit
-
-During development, copy the current `profile-kit/` directory into `.trayector/` in the profile repository.
-
-Once Trayector starts publishing releases, `.trayector/VERSION` will identify the release baseline by convention: version `0.1.0` corresponds to tag `v0.1.0`.
-
-Install the updater workflow from:
-
-```text
-templates/github/update-trayector.yml
-```
-
-as:
-
-```text
-.github/workflows/update-trayector.yml
-```
-
-The updater is manual. It is intended for tagged releases once releases exist. Until then, do not treat the current development state as a release.
-
-See [Trayector Profile Kit](profile-kit.md).
-
-## 5. Configure the profile
+## 4. Configure the profile
 
 Profile-owned configuration lives under:
 
@@ -123,43 +95,29 @@ technical-note: Nota técnica enfocada en un tema concreto
 
 The keys are intentionally owner-defined. A profile can rename, remove or extend them.
 
-## 6. Add the machine-readable entry point
+## 5. Create the professional entry point
 
-`profile.json` tells tools where the important parts of the repository live and where local Trayector instructions and settings can be found.
+`PROFILE.md` is a Markdown navigation document for the professional profile. It should describe the person and link to relevant career knowledge, without duplicating Trayector's AI instructions or implementation/version metadata.
 
-Example:
+```markdown
+# Professional Profile
 
-```json
-{
-  "trayector_version": "0.1",
-  "trayector": {
-    "instructions": ".trayector/README.md",
-    "profile_kit_version": ".trayector/VERSION",
-    "settings": ".trayector/settings/"
-  },
-  "profile": {
-    "name": "Alex Example",
-    "headline": "Engineering Manager and distributed-systems practitioner",
-    "location": "Remote"
-  },
-  "navigation": {
-    "summary": "profile/summary.md",
-    "timeline": "profile/career-timeline.md",
-    "capabilities": "profile/capabilities.md",
-    "experience": "experience/",
-    "deep_dives": "deep-dives/",
-    "projects": "projects/",
-    "stories": "stories/",
-    "feedback": "feedback/",
-    "content": "content/",
-    "generated": "generated/"
-  }
-}
+## Identity
+- Name: Alex Example
+- Headline: Engineering Manager
+
+## Career Knowledge
+- [Summary](profile/summary.md)
+- [Timeline](profile/career-timeline.md)
+- [Capabilities](profile/capabilities.md)
+- [Experience](experience/)
+- [Projects](projects/)
+- [Publications](content/)
 ```
 
-An AI entering the repository should read `profile.json`, follow `trayector.instructions`, read the relevant files under `trayector.settings`, then traverse canonical career knowledge through `navigation`.
+Agent adapters handle AI instruction discovery independently: they read `.trayector/settings/trayector.yaml` for the active `ia.version` and then load that version's `index.md`.
 
-## 7. Build the canonical profile before the README
+## 6. Build the canonical profile before the README
 
 Start with the knowledge itself:
 
@@ -244,7 +202,7 @@ It should present the person, not explain Trayector.
 
 Use [`../templates/readme-template.md`](../templates/readme-template.md).
 
-Trayector implementation details belong in `profile.json`, the optional `TRAYECTOR.md`, and `.trayector/`.
+Trayector implementation details belong in `PROFILE.md`, the optional `TRAYECTOR.md`, and `.trayector/`.
 
 ## 15. Generate tailored résumés as derived views
 
@@ -260,7 +218,7 @@ The generator should:
 6. generate the source résumé;
 7. render a PDF from the reviewed source when PDF tooling is available.
 
-Use the local `.trayector/resume-generation.md` instructions inside the profile repository.
+Use the local `.trayector/ia/<active-version>/resume-generation.md` instructions inside the profile repository.
 
 Generated application-specific outputs can live under:
 

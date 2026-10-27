@@ -8,12 +8,12 @@ The target role changes selection, ordering, emphasis and wording. It never chan
 
 Before generating a résumé, read:
 
-1. `profile.json` at the repository root;
+1. `PROFILE.md` at the repository root;
 2. the canonical profile documents relevant to the target role;
 3. the target job description or role brief;
-4. the selected résumé template under `.trayector/resume/`.
+4. the selected résumé template under `.trayector/ia/<active-version>/resume/`.
 
-If no template is specified, use `.trayector/resume/basic.md`.
+If no template is specified, use `.trayector/ia/<active-version>/resume/basic.md`.
 
 ## Step 1 — Analyze the target role
 
@@ -133,7 +133,7 @@ Before finalizing:
 ```text
 Create a tailored résumé and, if your environment supports it, a PDF for the target job description I provide.
 
-This repository is a Trayector Career as Code profile. Read profile.json first, then .trayector/README.md, .trayector/profile-rules.md, the relevant canonical profile documents, and the selected template under .trayector/resume/.
+This repository is a Trayector Career as Code profile. Read PROFILE.md first, then .trayector/README.md, .trayector/profile-rules.md, the relevant canonical profile documents, and the selected template under .trayector/ia/<active-version>/resume/.
 
 Use the canonical profile as the only source of professional facts.
 
