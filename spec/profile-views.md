@@ -109,4 +109,4 @@ This keeps AI in the role of interpreter and compiler rather than source of prof
 
 ## Optional public website
 
-An optional static site may present articles, experience, and a general downloadable CV. Configuration is profile-owned under `.trayector/settings/site.yaml`, while canonical documents remain the only source of truth. Rendering and deployment are distinct stages, with an extensible deployment provider. See [Site and Publishing](../docs/site-publishing.md). The builder and deployment workflows are not yet implemented.
+An optional static site may present articles, experience, and a general downloadable CV. Configuration is profile-owned under `.trayector/settings/site.yaml`, while canonical documents remain the only source of truth. The default site and the GitHub Actions publishing workflow are editable, repository-owned examples; no theme or provider interface is imposed. See [Site and Publishing](../docs/site-publishing.md). The builder and deployment workflows are not yet implemented.
