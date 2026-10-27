@@ -68,7 +68,7 @@ def build(profile, out):
                 continue
             heading=line.startswith('#')
             line=re.sub(r'^#{1,6}\s*','',line)
-            line=re.sub(r'\[([^]]+)\]\\([^)]+\)',r'\1',line)
+            line=re.sub(r'\[([^]]+)\]\([^)]+\)',r'\1',line)
             line=re.sub(r'[*_`]+','',line)
             font='Helvetica-Bold' if heading else 'Helvetica'
             size=13 if heading else 10
