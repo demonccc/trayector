@@ -15,7 +15,7 @@ Canonical knowledge lives in the profile's structured documents and relationship
 - `stories/`;
 - `feedback/` when present;
 - `content/`;
-- `profile.json` for machine-readable navigation.
+- `PROFILE.md` for machine-readable navigation.
 
 Profile configuration such as languages and classifications lives under `.trayector/settings/`. It helps tools interpret the profile, but it is not itself career knowledge.
 
@@ -80,7 +80,7 @@ Its purpose is to:
 - explain where the machine-readable entry point lives;
 - clarify that the README is a view rather than the model itself.
 
-`profile.json` remains the machine-readable declaration of the Trayector version and navigation entry point.
+`PROFILE.md` remains the machine-readable declaration of the Trayector version and navigation entry point.
 
 ## Generated and committed views
 
@@ -96,7 +96,7 @@ Regardless of how a view is created, it SHOULD be reproducible from canonical pr
 
 An AI generating or updating a README or résumé SHOULD:
 
-1. read `profile.json`;
+1. read `PROFILE.md`;
 2. follow `trayector.instructions` and read relevant configuration under `.trayector/settings/`;
 3. follow navigation into canonical profile areas;
 4. read the target role when generating a tailored résumé;
