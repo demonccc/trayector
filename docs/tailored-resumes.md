@@ -53,7 +53,7 @@ Do not treat every keyword as equally important.
 
 ### 2. Read the canonical profile
 
-Start at `profile.json` and traverse the relevant profile areas.
+Start at `PROFILE.md` and traverse the relevant profile areas.
 
 Prefer evidence-backed material from:
 
@@ -137,7 +137,7 @@ If a statement cannot be supported, remove or weaken it.
 ```text
 Create a tailored résumé for the job description I provide.
 
-Use my Trayector profile as the only source of professional facts. Start at profile.json and read the relevant canonical experience, projects, capabilities, deep dives, stories, feedback and content.
+Use my Trayector profile as the only source of professional facts. Start at PROFILE.md and read the relevant canonical experience, projects, capabilities, deep dives, stories, feedback and content.
 
 Use the selected résumé template as presentation guidance.
 
