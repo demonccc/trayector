@@ -3,7 +3,7 @@
 The default website source lives in **Trayector**, not in the personal career repository.
 
 - `site/`: HTML templates and static assets
-- `scripts/build.py`: Markdown-to-HTML and selected-CV-to-PDF rendering
+- `scripts/build-site.py`: Markdown-to-HTML and selected-CV-to-PDF rendering
 - `scripts/requirements.txt`: renderer dependencies
 - `.github/workflows/publish.yml`: reusable GitHub Pages workflow
 
