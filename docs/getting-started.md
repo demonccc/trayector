@@ -63,7 +63,7 @@ my-career/
 └── content/
 ```
 
-`PROFILE.md` is the navigation entry point for professional facts. Copy the versioned AI instructions from `profile-kit/ia/0.1.0/` into `.trayector/ia/0.1.0/`. Set `.trayector/settings/trayector.yaml` with `ia.version: 0.1.0`. Install identical agent adapters from `templates/agents/` and the manual updater from `templates/github/update-trayector.yml`. New instruction releases install alongside old versions and are activated explicitly.
+`PROFILE.md` is the navigation entry point for professional facts. Copy the versioned AI instructions from `profile-kit/skills/0.1.0/` into `.trayector/skills/0.1.0/`. Set `.trayector/settings/trayector.yaml` with `skills.version: 0.1.0`. Install identical agent adapters from `templates/agents/` and the manual updater from `templates/github/update-trayector.yml`. New instruction releases install alongside old versions and are activated explicitly.
 
 ## 4. Configure the profile
 
@@ -115,7 +115,7 @@ The keys are intentionally owner-defined. A profile can rename, remove or extend
 - [Publications](content/)
 ```
 
-Agent adapters handle AI instruction discovery independently: they read `.trayector/settings/trayector.yaml` for the active `ia.version` and then load that version's `index.md`.
+Agent adapters handle AI instruction discovery independently: they read `.trayector/settings/trayector.yaml` for the active `skills.version` and then load that version's `index.md`.
 
 ## 6. Build the canonical profile before the README
 
@@ -218,7 +218,7 @@ The generator should:
 6. generate the source résumé;
 7. render a PDF from the reviewed source when PDF tooling is available.
 
-Use the local `.trayector/ia/<active-version>/resume-generation.md` instructions inside the profile repository.
+Use the local `.trayector/skills/<active-version>/resume-generation.md` instructions inside the profile repository.
 
 Generated application-specific outputs can live under:
 

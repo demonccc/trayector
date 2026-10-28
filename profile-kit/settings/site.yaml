@@ -8,5 +8,5 @@ experience:
   enabled: true
 
 cv:
-  enabled: true
-  profile: general
+  enabled: false
+  selected: general

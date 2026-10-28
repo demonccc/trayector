@@ -1,0 +1,61 @@
+name: Publish Trayector site
+on:
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      enabled: ${{ steps.config.outputs.enabled }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: profile
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ job.workflow_repository }}
+          ref: ${{ job.workflow_sha }}
+          path: trayector
+          persist-credentials: false
+      - name: Check version and publication settings
+        id: config
+        env:
+          WORKFLOW_REF: ${{ job.workflow_ref }}
+        shell: bash
+        run: |
+          python3 -m pip install --user PyYAML==6.0.3
+          python3 - <<'PY'
+          import os, re, pathlib, yaml
+          p=pathlib.Path("profile/.trayector/settings")
+          version=str((yaml.safe_load((p/"trayector.yaml").read_text()) or {}).get("version",""))
+          ref=os.environ["WORKFLOW_REF"].rsplit("@",1)[-1].removeprefix("refs/tags/")
+          if not re.fullmatch(r"v[0-9]+\.[0-9]+\.[0-9]+",ref) or "v"+version != ref:
+              raise SystemExit(f"Expected Trayector release v{version}; workflow runs from {ref}")
+          enabled=bool((yaml.safe_load((p/"site.yaml").read_text()) or {}).get("enabled",False))
+          with open(os.environ["GITHUB_OUTPUT"],"a") as f: f.write(f"enabled={str(enabled).lower()}\n")
+          PY
+      - name: Install renderer
+        if: steps.config.outputs.enabled == 'true'
+        run: python3 -m pip install --user -r trayector/site/requirements.txt
+      - name: Build static site
+        if: steps.config.outputs.enabled == 'true'
+        run: python3 trayector/site/build.py --profile profile --output "${{ runner.temp }}/trayector-site"
+      - name: Upload static site
+        if: steps.config.outputs.enabled == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ runner.temp }}/trayector-site
+  deploy:
+    needs: build
+    if: needs.build.outputs.enabled == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deploy

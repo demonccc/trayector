@@ -55,23 +55,15 @@ A profile may also include a small `TRAYECTOR.md` file that identifies the Traye
 
 See [Profile Views](spec/profile-views.md).
 
-## Optional public site
+## Local Trayector release
 
-Trayector profiles may opt into a static public site for articles, experience, and a general downloadable CV. Configure its sections through `.trayector/settings/site.yaml`; edit `.trayector/site/` to change the website and `.github/workflows/publish.yml` to change publishing. This is an optional presentation layer; canonical career knowledge, Git history, and AI-readable profile structure remain available even when no website is published.
+Every personal profile declares one immutable Trayector release in `.trayector/settings/trayector.yaml` using `version: 0.1.0`. A version bundle at `.trayector/versions/<version>/` contains operational **skills** and mandatory **templates**. The agent must use a template as the structural contract when reading, creating or updating any record; templates are not optional examples.
 
-See [Site and Publishing](docs/site-publishing.md) for the user-owned example and customization approach. The site builder and publishing workflow are planned, not yet implemented.
+The nine skills are: initialize, profile, experience, projects, publications, contributions, **manage-resumes**, publish and manage-trayector. Agent entry points load the active version and its `skills/index.md`. CVs are derived Markdown under `cv/` and follow `templates/resumes/`.
 
-## Local AI instructions
+The optional website implementation remains in the central Trayector repository: HTML/CSS, Markdown renderer and a GitHub Pages reusable workflow pinned to the same release tag. The personal repository keeps only the publishing configuration, professional documents and small GitHub Actions callers. See [Publishing](docs/site-publishing.md) and [Profile Kit](docs/profile-kit.md).
 
-A Trayector profile can carry a local Profile Kit under `.trayector/`.
-
-This gives an AI enough in-repository guidance to understand the profile, navigate canonical career knowledge, build the README, and generate tailored résumés and PDFs without relying on prior chat context.
-
-The Profile Kit starts from Trayector defaults but **may be customized by the profile owner**. Local templates, settings and instructions are part of the profile configuration and are not disposable generated files.
-
-Updates are manual and PR-based. When the owner chooses to update, Trayector compares the previously accepted release derived from `.trayector/VERSION`, the current local `.trayector/` customizations, and the selected new release. Non-conflicting changes can merge automatically; incompatible changes are surfaced for human resolution instead of overwriting local work.
-
-See [Trayector Profile Kit](docs/profile-kit.md).
+A manually triggered update proposes a PR installing both skills **and templates** for the new release while preserving older versions and personal content. The user chooses when to merge. No automatic migration of canonical career records.
 
 ## What can live in a Trayector profile?
 
@@ -118,47 +110,7 @@ Outcome
 
 You create **your own career repository**. Trayector defines structural conventions; your repository contains your information and owns local configuration and vocabularies.
 
-A typical profile looks like this:
-
-```text
-my-career/
-├── README.md
-├── TRAYECTOR.md
-├── PROFILE.md
-├── .trayector/
-│   ├── README.md
-│   ├── profile-rules.md
-│   ├── resume-generation.md
-│   ├── VERSION
-│   ├── settings/
-│   │   ├── languages.yaml
-│   │   └── classifications.yaml
-│   └── resume/
-├── .github/
-│   └── workflows/
-│       └── update-trayector.yml
-├── profile/
-├── experience/
-├── deep-dives/
-├── projects/
-├── stories/
-├── feedback/
-├── content/
-└── generated/
-```
-
-The recommended workflow is:
-
-1. collect source material such as CVs, LinkedIn data, project notes and repositories;
-2. install the local Trayector Profile Kit;
-3. create `PROFILE.md` and configure profile-owned vocabulary under `.trayector/settings/`;
-4. reconstruct canonical career knowledge from the sources;
-5. resolve contradictions instead of silently guessing;
-6. connect capabilities to real evidence;
-7. build README and other views from the canonical knowledge;
-8. generate tailored résumés when needed;
-9. update the Profile Kit manually when you choose;
-10. version changes as the career evolves.
+A typical profile contains `PROFILE.md`, `profile/`, `experience/`, `projects/`, `content/`, `cv/` and `.trayector/` with versioned skills and templates. An AI agent can initialize the profile from a CV or through guided questions; Git expertise is not required from the profile owner.
 
 See [Getting Started](docs/getting-started.md) for the guided flow.
 
@@ -225,4 +177,8 @@ Issues and pull requests are welcome.
 
 ## AI discovery and updates
 
-The canonical profile starts at `PROFILE.md`. Agent entry files (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, and Copilot instructions) all direct agents to `.trayector/settings/trayector.yaml` and the selected `.trayector/ia/<version>/index.md`; local extensions remain in `.trayector/ia/custom/`. Updating Trayector AI installs only a new immutable version directory by PR and does not change the active version or site customizations.
+The canonical profile starts at `PROFILE.md`. Agent entry files (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, and Copilot instructions) all direct agents to `.trayector/settings/trayector.yaml` and the selected `.trayector/skills/<version>/index.md`; local extensions remain in `.trayector/skills/custom/`. Updating Trayector AI installs only a new immutable version directory by PR and does not change the active version or site customizations.
+
+## Publishing implementation
+
+The default HTML/CSS and Markdown renderer live in [`site/`](site/). Profiles call the release-pinned reusable [publish workflow](.github/workflows/publish.yml) using the small caller template at [`templates/github/publish.yml`](templates/github/publish.yml). The reusable workflow checks out its own exact release SHA, ensuring the workflow and static assets match. Publishing is opt-in and the default CV download requires an existing PDF. See [Publishing](docs/site-publishing.md).
