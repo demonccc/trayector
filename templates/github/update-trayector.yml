@@ -30,26 +30,24 @@ jobs:
         run: |
           set -euo pipefail
           [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Invalid version" >&2; exit 1; }
-          source_path="profile-kit/versions/$VERSION"
           destination=".trayector/versions/$VERSION"
           tag="v$VERSION"
           git clone --filter=blob:none --no-checkout https://github.com/demonccc/trayector.git /tmp/trayector-upstream
           git -C /tmp/trayector-upstream fetch --depth=1 origin "refs/tags/$tag:refs/tags/$tag"
           mkdir -p /tmp/trayector-incoming
-          git -C /tmp/trayector-upstream archive "$tag" "$source_path" | tar -xf - -C /tmp/trayector-incoming
-          test -f "/tmp/trayector-incoming/$source_path/skills/index.md"
-          test -f "/tmp/trayector-incoming/$source_path/templates/profile.md"
-          test -f "/tmp/trayector-incoming/$source_path/templates/resumes/basic.md"
+          git -C /tmp/trayector-upstream archive "$tag" skills templates | tar -xf - -C /tmp/trayector-incoming
+          test -f /tmp/trayector-incoming/skills/index.md
+          test -f /tmp/trayector-incoming/templates/profile.md
+          test -f /tmp/trayector-incoming/templates/resumes/basic.md
           if [ -e "$destination" ]; then
-            diff -qr "$destination" "/tmp/trayector-incoming/$source_path" || {
-              echo "Existing version differs from immutable upstream release. Not overwriting." >&2
+            diff -qr "$destination" /tmp/trayector-incoming || {
+              echo "Installed release differs from tagged sources. Refusing overwrite." >&2
               exit 1
             }
           else
-            mkdir -p "$(dirname "$destination")"
-            cp -R "/tmp/trayector-incoming/$source_path" "$destination"
+            mkdir -p "$destination"
+            cp -R /tmp/trayector-incoming/skills /tmp/trayector-incoming/templates "$destination/"
           fi
-          # Never overwrite installed versions or professional data.
       - name: Align release version and official workflow caller
         env:
           VERSION: ${{ inputs.trayector_version }}
