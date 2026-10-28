@@ -1,3 +1,0 @@
-# Initialize a profile
-
-Offer two entry points: (1) read a CV provided by the owner, or (2) build career history through a guided conversation. Analyze all provided sources **before** asking questions. Ask only a small set of relevant, missing questions; keep unanswered items explicit for later sessions. Ask for primary language, whether publications should be imported and whether the public website should be enabled. Website and publications are independent. Do not enable a missing CV download. Follow the corresponding versioned templates when creating each record; use profile-rules.md. Summarize extracted facts and ask the owner to validate ambiguous claims. Do not require Git knowledge from the owner; the agent handles repository operations.
