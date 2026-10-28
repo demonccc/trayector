@@ -1,9 +1,9 @@
-# Trayector — agent procedures
+# Trayector agent skills
 
-Read PROFILE.md, then the active release from .trayector/settings/trayector.yaml (`version`). This index and the templates are installed in ``.
+Trayector's source skills and mandatory structural templates live in the repository-root `skills/` and `templates/` directories. A released tag installs copies into a **person's** repository at `.trayector/versions/<version>/skills/` and `.trayector/versions/<version>/templates/`.
 
-**Mandatory**: before *reading, writing, updating or validating* a record, load its matching template from `templates/` and interpret the record using the template's required fields, section semantics and relationships. Templates are structural contracts, not examples. Never invent or rename fields; report unsupported information instead. Follow `profile-rules.md`.
+When working on a person's profile, read `PROFILE.md` and `.trayector/settings/trayector.yaml` to select the active version. Before **reading or modifying** a professional record, consult the corresponding template under the installed release's `templates/` directory. Templates define mandatory structure and semantics, not examples. Follow `profile-rules.md`.
 
-Skills: [initialize](initialize.md), [profile](profile.md), [experience](experience.md), [projects](projects.md), [publications](publications.md), [contributions](contributions.md), [manage-resumes](manage-resumes.md), [publish](publish.md), [manage-trayector](manage-trayector.md).
+Operational skills: [initialize](initialize.md), [profile](profile.md), [experience](experience.md), [projects](projects.md), [publications](publications.md), [contributions](contributions.md), [manage-resumes](manage-resumes.md), [publish](publish.md), [manage-trayector](manage-trayector.md).
 
-Operate incrementally. Professional records live outside .trayector; CVs are derived Markdown in `cv/`. Do not auto-load external custom instructions. Never invent career facts.
+Career records are canonical; CVs under `cv/` are derived Markdown. Do not fabricate professional facts or silently change required template fields.
