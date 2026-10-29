@@ -1,15 +1,38 @@
-# Versioned Trayector Profile Kit
+# Trayector release layout
 
-The active release is identified only by `.trayector/settings/trayector.yaml`:
+**Trayector repository** holds the editable source of truth for its implementation:
+
+- `skills/`: agent procedures and operational instructions
+- `templates/`: mandatory Markdown structural contracts for reading and writing career records
+- `site/`: HTML templates and static website assets
+- `scripts/`: site builder and supporting scripts
+- `profile-kit/settings/`: default configuration files copied into a new career repository
+
+**A personal career repository** contains its own career records plus an installed, immutable release bundle:
+
+```text
+.trayector/
+  settings/
+    trayector.yaml
+    site.yaml
+  versions/
+    0.1.0/
+      skills/
+      templates/
+```
+
+This version folder is **not** part of the Trayector source layout. It is assembled from the repository-root `skills/` and `templates/` directories at release tag `v0.1.0`.
+
+A career repository is what these docs call a **profile**: the repository owned by a person containing their professional history, projects, publications, and derived résumés. There is no central account or hosted profile service.
+
+The active release is selected by `.trayector/settings/trayector.yaml`:
 
 ```yaml
 version: 0.1.0
 ```
 
-Each immutable release bundle installs together under `.trayector/versions/<version>/` with `skills/` **and** `templates/`. Agent entry points at root (AGENTS.md, CLAUDE.md, GEMINI.md, .github/copilot-instructions.md) must resolve the version and read `skills/index.md`. Templates are mandatory structural contracts for **understanding, editing and generating** Markdown records; skills define operational procedures. Do not interpret arbitrary Markdown without the matching active template.
+Agents read `PROFILE.md`, then the matching installed `skills/index.md` and mandatory matching record template. A template is required to **understand** existing documents and to create or update them consistently.
 
-The manual update workflow downloads the complete `profile-kit/versions/<version>/` from tag `v<version>`, preserves installed old versions and prepares a PR aligning release version and official reusable workflow references. It must not silently rewrite existing professional records after template changes. Custom agent instructions remain user-managed.
+The manual `update-trayector.yml` workflow fetches the new tag's root skills and templates, installs them at `.trayector/versions/<version>/` without changing older releases, and proposes a PR that aligns the declared version and official reusable publish workflow. It does not migrate professional records silently or overwrite modified installed bundles. All updates are optional.
 
-CVs are derived Markdown in `cv/`; `manage-resumes.md` generates and maintains them using `templates/resumes/basic.md`. Site publishing selects an existing CV and renders it, without an AI call.
-
-Releases and end-to-end template builds still require testing before describing the installation as production-ready.
+The official site renderer remains in Trayector, not the personal repository. The local publish caller references the matching tag. Its templates and scripts are checked out from the same workflow commit.

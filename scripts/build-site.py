@@ -5,7 +5,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import simpleSplit
 
-root = Path(__file__).resolve().parent
+root = Path(__file__).resolve().parent.parent / 'site'
 tags = set(bleach.sanitizer.ALLOWED_TAGS) | {'p','h1','h2','h3','h4','pre','code','hr','br','img','table','thead','tbody','tr','td','th'}
 attrs = {'a':['href','title'], 'img':['src','alt','title']}
 def convert(src):
