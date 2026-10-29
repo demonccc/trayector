@@ -85,6 +85,14 @@ Anything that forms part of your career or demonstrates professional knowledge, 
 
 No coding or Git expertise is required from the profile owner when using an agent; the versioned instructions guide the agent. Professional facts must remain accurate and supported.
 
+## Consistent terminology
+
+Trayector does not prescribe a separate taxonomy or a fixed classification vocabulary. The mandatory Markdown templates define the structure and meaning of career records. When an agent encounters recurring concepts, it should use stable, human-readable identifiers, reuse an existing term where it means the same thing, and preserve meaningful distinctions.
+
+For example, a person's career information might mention capabilities such as Platform Engineering, technologies such as Kubernetes or Amazon EKS, domains, organizations, and publication topics. These are **examples, not an exhaustive or required list**. Alternative names such as `k8s` and `Kubernetes` can be recognized as aliases; a service such as Amazon EKS may relate to Kubernetes without being identical to it. The agent should establish those relationships from actual context rather than inventing a universal hierarchy.
+
+If a person's capabilities or knowledge need to be recorded explicitly, store them as canonical professional information following the corresponding versioned **template**, and link them to experience, projects, contributions and evidence. Do not turn suggested categories into mandatory fields or introduce a separate taxonomy file solely to store terminology.
+
 ## Core model
 
 Trayector separates concepts that résumés frequently collapse together:
