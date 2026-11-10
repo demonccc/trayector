@@ -3,7 +3,9 @@
 **Trayector repository** holds the editable source of truth for its implementation:
 
 - `skills/`: agent procedures and operational instructions
-- `templates/`: mandatory Markdown structural contracts for reading and writing career records
+- `templates/content/`: mandatory contracts for canonical professional documents (profile, experience, project, contribution, publication)
+- `templates/resumes/`: derived CV formats
+- `templates/agents/` and `templates/github/`: agent entry-point files and workflow callers
 - `site/`: HTML templates and static website assets
 - `scripts/`: site builder and supporting scripts
 - `profile-kit/settings/`: default configuration files copied into a new career repository
