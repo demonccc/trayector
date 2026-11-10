@@ -12,6 +12,9 @@ The personal repository keeps career documents, `.trayector/settings/site.yaml`,
 
 ```yaml
 enabled: false
+languages:
+  - es
+  - en
 articles:
   enabled: true
   include:
@@ -35,6 +38,8 @@ articles/career-as-code/
   pt-BR.md
   assets/
 ```
+
+The `languages` list configures which language versions the site offers, in preferred order. Articles may have additional translations; only linked versions whose filename language code is configured in `site.yaml` are rendered. Articles with no matching language version are omitted. This does not translate any content or yet localize the site's shared navigation and professional profile pages.
 
 The README is a human-readable index, following `templates/content/article.md`. Its `## Content` section links to each language file, for example `- Spanish: [es.md](es.md)`. The renderer reads only the linked files, renders the unrestricted Markdown of each language, copies shared assets, and provides language links. No front matter or mandatory body headings are required. `## Summary` supplies the site index excerpt; `## Related` links professional records. Content files not linked in README are not article versions.
 
