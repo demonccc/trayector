@@ -15,8 +15,8 @@ def parse(src):
         _, meta, text = src.split('---\n', 2)
         return yaml.safe_load(meta) or {}, text
     return {}, src
-def page(tpl, title, body, base, navigation):
-    for key, value in {'title':html.escape(title),'body':body,'base':base,'navigation':navigation,'lang':'es'}.items():
+def page(tpl, title, body, base, navigation, lang='es'):
+    for key, value in {'title':html.escape(title),'body':body,'base':base,'navigation':navigation,'lang':html.escape(lang)}.items():
         tpl = tpl.replace('{{'+key+'}}',value)
     return tpl
 def build(profile, out):
@@ -34,19 +34,65 @@ def build(profile, out):
     profile_md=profile/'PROFILE.md'
     if not profile_md.is_file(): raise FileNotFoundError('Missing PROFILE.md')
     (out/'index.html').write_text(page(tpl,'Perfil',convert(parse(profile_md.read_text())[1]),'',nav))
-    for section, folder in [('experience','experience'),('articles','content')]:
-        if not options[section]: continue
-        target=out/section
+    # Experience retains its existing record renderer.
+    if options['experience']:
+        target = out/'experience'
         target.mkdir()
-        entries=[]
-        for n, path in enumerate(sorted((profile/folder).rglob('*.md')) if (profile/folder).is_dir() else []):
-            meta, body=parse(path.read_text())
-            if section=='articles' and str(meta.get('status','published')).lower() in ('draft','private'): continue
-            slug=re.sub('[^a-z0-9]+','-',path.relative_to(profile/folder).with_suffix('').as_posix().lower()).strip('-') or str(n)
-            title=str(meta.get('title') or next((x[2:] for x in body.splitlines() if x.startswith('# ')),path.stem))
-            (target/(slug+'.html')).write_text(page(tpl,title,convert(body),'../',nav.replace('href="','href="../')))
+        entries = []
+        for n, path in enumerate(sorted((profile/'experience').rglob('*.md')) if (profile/'experience').is_dir() else []):
+            meta, body = parse(path.read_text(encoding='utf-8'))
+            slug = re.sub('[^a-z0-9]+', '-', path.relative_to(profile/'experience').with_suffix('').as_posix().lower()).strip('-') or str(n)
+            title = str(meta.get('title') or next((x[2:] for x in body.splitlines() if x.startswith('# ')), path.stem))
+            (target/(slug+'.html')).write_text(page(tpl,title,convert(body),'../',nav.replace('href="','href="../')),encoding='utf-8')
             entries.append('<li><a href="'+html.escape(slug)+'.html">'+html.escape(title)+'</a></li>')
-        (target/'index.html').write_text(page(tpl,section.title(),'<h1>'+section.title()+'</h1><ul>'+''.join(entries)+'</ul>','../',nav.replace('href="','href="../')))
+        (target/'index.html').write_text(page(tpl,'Experiencia','<h1>Experiencia</h1><ul>'+''.join(entries)+'</ul>','../',nav.replace('href="','href="../')),encoding='utf-8')
+
+    # Articles are opt-in and indexed by a readable README, not front matter.
+    if options['articles']:
+        target = out/'articles'
+        target.mkdir()
+        entries = []
+        allowed = config.get('articles',{}).get('include',[])
+        if not isinstance(allowed,list):
+            raise ValueError('articles.include must be a list of approved article directory names')
+        for slug in allowed:
+            if not isinstance(slug,str) or not re.fullmatch(r'[a-zA-Z0-9][a-zA-Z0-9_-]*',slug):
+                raise ValueError('Invalid article directory name in articles.include')
+            article = profile/'articles'/slug
+            readme = article/'README.md'
+            if not readme.is_file():
+                raise FileNotFoundError('Approved article has no README.md: '+slug)
+            source = readme.read_text(encoding='utf-8')
+            title = next((line[2:].strip() for line in source.splitlines() if line.startswith('# ')),slug)
+            section = re.search(r'^## Content\s*\n(.*?)(?=^## |\Z)', source, re.M|re.S)
+            if not section:
+                raise ValueError('Article README is missing ## Content: '+slug)
+            translations = re.findall(r'^\s*[-*]\s*([^:\n]+):\s*\[([^\]]+)\]\(([^)]+)\)\s*$',section.group(1),re.M)
+            if not translations:
+                raise ValueError('Article has no linked language files: '+slug)
+            destination = target/slug
+            destination.mkdir()
+            assets = article/'assets'
+            if assets.is_dir():
+                shutil.copytree(assets,destination/'assets')
+            language_links = []
+            for label,_,filename in translations:
+                if not re.fullmatch(r'[a-zA-Z0-9][a-zA-Z0-9_-]*\.md',filename):
+                    raise ValueError('Unsafe article language file name: '+filename)
+                lang = filename[:-3]
+                body_path = article/filename
+                if not body_path.is_file():
+                    raise FileNotFoundError('Missing article language file: '+str(body_path))
+                body = body_path.read_text(encoding='utf-8')
+                page_title = next((line[2:].strip() for line in body.splitlines() if line.startswith('# ')),title)
+                links = '<nav aria-label="Languages">'+''.join('<a href="'+html.escape(f[:-3])+'.html">'+html.escape(l)+'</a> ' for l,_,f in translations)+'</nav>'
+                rendered = convert(body)
+                (destination/(lang+'.html')).write_text(page(tpl,page_title,links+rendered,'../../',nav.replace('href="','href="../../'),lang),encoding='utf-8')
+                language_links.append('<a href="'+html.escape(slug)+'/'+html.escape(lang)+'.html">'+html.escape(label.strip())+'</a>')
+            summary = re.search(r'^## Summary\s*\n(.*?)(?=^## |\Z)', source,re.M|re.S)
+            excerpt = convert(summary.group(1).strip()) if summary else ''
+            entries.append('<li><strong>'+html.escape(title)+'</strong>'+excerpt+'<p>'+' · '.join(language_links)+'</p></li>')
+        (target/'index.html').write_text(page(tpl,'Artículos','<h1>Artículos</h1><ul>'+''.join(entries)+'</ul>','../',nav.replace('href="','href="../')),encoding='utf-8')
     if options['cv']:
         slug=str(config['cv'].get('selected','general'))
         if not re.fullmatch(r'[a-zA-Z0-9][a-zA-Z0-9_-]*',slug):
