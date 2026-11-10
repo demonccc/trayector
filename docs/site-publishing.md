@@ -1,22 +1,21 @@
 # Publishing a career profile
 
-The default website source lives in **Trayector**, not in the personal career repository.
+The website implementation lives in the central Trayector release, not in the personal repository:
 
-- `site/`: HTML templates and static assets
-- `scripts/build-site.py`: Markdown-to-HTML and selected-CV-to-PDF rendering
-- `scripts/requirements.txt`: renderer dependencies
+- `site/`: static HTML templates and assets
+- `scripts/build-site.py`: Markdown-to-HTML and selected-CV-to-PDF renderer
 - `.github/workflows/publish.yml`: reusable GitHub Pages workflow
 
-A career repository keeps professional Markdown, `.trayector/settings/site.yaml`, and a small `.github/workflows/publish.yml` caller pinned to the same immutable `vX.Y.Z` Trayector tag as `.trayector/settings/trayector.yaml`.
+The personal repository keeps career documents, `.trayector/settings/site.yaml`, and a thin workflow pinned to the same immutable Trayector release as `.trayector/settings/trayector.yaml`.
 
-The reusable workflow checks out its own exact `job.workflow_sha` to obtain site assets and scripts from the same release. It reads the **calling repository's** career content, not Trayector's example files.
-
-Typical settings:
+## Configuration
 
 ```yaml
 enabled: false
 articles:
   enabled: true
+  include:
+    - career-as-code
 experience:
   enabled: true
 cv:
@@ -24,6 +23,21 @@ cv:
   selected: general
 ```
 
-Enable `cv` only when `cv/<selected>.md` exists. The site displays that CV as HTML and includes a PDF download link generated from the same Markdown file. No AI API is used by publishing.
+Site publishing is opt-in. **An article is never exposed merely because it exists in Git.** The site builds only article folders explicitly approved in `articles.include`, and only if the site and articles section are enabled. An empty list publishes no articles. Enabling the site does not authorize publication of drafts. Article references in `publications/` do not automatically publish anything.
 
-Users can replace their caller workflows or site implementation. The default site is intentionally minimal: advanced image handling, internal-link rewriting, visual PDF polishing and multilingual navigation still require testing or implementation. It must be tested against a real tagged release before being considered production-ready.
+## Multilingual article layout
+
+```text
+articles/career-as-code/
+  README.md
+  es.md
+  en.md
+  pt-BR.md
+  assets/
+```
+
+The README is a human-readable index, following `templates/content/article.md`. Its `## Content` section links to each language file, for example `- Spanish: [es.md](es.md)`. The renderer reads only the linked files, renders the unrestricted Markdown of each language, copies shared assets, and provides language links. No front matter or mandatory body headings are required. `## Summary` supplies the site index excerpt; `## Related` links professional records. Content files not linked in README are not article versions.
+
+`publications/` instead documents content hosted externally (including copyright registrations) through a description, personal participation, original-content `## Link`, and optional `## Related`. It is not the storage location for authored Markdown articles.
+
+The selected CV `cv/<selected>.md` is rendered to an HTML page and downloadable PDF without AI calls. Publishing needs testing against a real release before production use.
