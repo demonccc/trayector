@@ -1,18 +1,32 @@
 # Trayector release layout
 
-**Trayector repository** holds the editable source of truth for its implementation:
+**Trayector source repository** holds the editable implementation:
 
-- `skills/`: agent procedures and operational instructions
-- `templates/content/`: mandatory contracts for canonical professional documents (profile, experience, project, contribution, publication)
+- `skills/`: agent procedures
+- `templates/content/`: professional document contracts for profile, experience, project, contribution, publication and article indexes
 - `templates/resumes/`: derived CV formats
-- `templates/agents/` and `templates/github/`: agent entry-point files and workflow callers
-- `site/`: HTML templates and static website assets
-- `scripts/`: site builder and supporting scripts
-- `profile-kit/settings/`: default configuration files copied into a new career repository
+- `templates/agents/` and `templates/github/`: entry points and workflow callers
+- `site/`: HTML templates and static assets
+- `scripts/`: site builder
+- `profile-kit/settings/`: profile configuration defaults
 
-**A personal career repository** contains its own career records plus an installed, immutable release bundle:
+A **personal repository** stores professional records and an installed release:
 
 ```text
+PROFILE.md
+README.md
+profile/
+experience/
+projects/
+contributions/
+publications/
+articles/
+  career-as-code/
+    README.md
+    es.md
+    en.md
+    assets/
+cv/
 .trayector/
   settings/
     trayector.yaml
@@ -23,18 +37,14 @@
       templates/
 ```
 
-This version folder is **not** part of the Trayector source layout. It is assembled from the repository-root `skills/` and `templates/` directories at release tag `v0.1.0`.
+`projects/` describes initiatives created, developed or maintained substantially by the person. `contributions/` describes individual work contributed to other initiatives. `publications/` records external content, public participation and registrations such as copyright. `articles/` contains authored content kept in Markdown, potentially in many languages, with one README index per article. A Markdown article body is completely free-form; the README provides the navigable contract and related links.
 
-A career repository is what these docs call a **profile**: the repository owned by a person containing their professional history, projects, publications, and derived résumés. There is no central account or hosted profile service.
-
-The active release is selected by `.trayector/settings/trayector.yaml`:
+The source repository does **not** itself keep the personal `.trayector/versions/` layout. The tagged release supplies a versioned bundle, selected by `.trayector/settings/trayector.yaml`:
 
 ```yaml
 version: 0.1.0
 ```
 
-Agents read `PROFILE.md`, then the matching installed `skills/index.md` and mandatory matching record template. A template is required to **understand** existing documents and to create or update them consistently.
+Agents load `PROFILE.md`, the installed matching `skills/index.md`, and the relevant document template before reading or writing career records. The optional updater installs a new skills/templates bundle via a reviewable PR and aligns release-pinned workflows; it does not rewrite personal records.
 
-The manual `update-trayector.yml` workflow fetches the new tag's root skills and templates, installs them at `.trayector/versions/<version>/` without changing older releases, and proposes a PR that aligns the declared version and official reusable publish workflow. It does not migrate professional records silently or overwrite modified installed bundles. All updates are optional.
-
-The official site renderer remains in Trayector, not the personal repository. The local publish caller references the matching tag. Its templates and scripts are checked out from the same workflow commit.
+The site renderer and its scripts remain in Trayector. Site publishing is optional, and authored articles are visible only when explicitly listed in `.trayector/settings/site.yaml` under `articles.include`.
