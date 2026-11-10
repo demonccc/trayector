@@ -23,6 +23,11 @@ def build(profile, out):
     config = yaml.safe_load((profile/'.trayector/settings/site.yaml').read_text()) or {}
     if not config.get('enabled', False):
         return
+    languages = config.get('languages', ['es'])
+    if not isinstance(languages, list) or not languages or any(not isinstance(v, str) or not re.fullmatch(r'[a-z]{2,3}(?:-[A-Za-z0-9]+)*', v) for v in languages):
+        raise ValueError('site.languages must be a non-empty list of language codes')
+    if len(languages) != len(set(languages)):
+        raise ValueError('site.languages contains duplicate languages')
     if out == profile or profile in out.parents:
         raise ValueError('Output may not overwrite career source')
     if out.exists(): shutil.rmtree(out)
@@ -70,13 +75,16 @@ def build(profile, out):
             translations = re.findall(r'^\s*[-*]\s*([^:\n]+):\s*\[([^\]]+)\]\(([^)]+)\)\s*$',section.group(1),re.M)
             if not translations:
                 raise ValueError('Article has no linked language files: '+slug)
+            available = [(label, caption, filename) for label, caption, filename in translations if filename.endswith('.md') and filename[:-3] in languages]
+            if not available:
+                continue
             destination = target/slug
             destination.mkdir()
             assets = article/'assets'
             if assets.is_dir():
                 shutil.copytree(assets,destination/'assets')
             language_links = []
-            for label,_,filename in translations:
+            for label,_,filename in available:
                 if not re.fullmatch(r'[a-zA-Z0-9][a-zA-Z0-9_-]*\.md',filename):
                     raise ValueError('Unsafe article language file name: '+filename)
                 lang = filename[:-3]
@@ -85,7 +93,7 @@ def build(profile, out):
                     raise FileNotFoundError('Missing article language file: '+str(body_path))
                 body = body_path.read_text(encoding='utf-8')
                 page_title = next((line[2:].strip() for line in body.splitlines() if line.startswith('# ')),title)
-                links = '<nav aria-label="Languages">'+''.join('<a href="'+html.escape(f[:-3])+'.html">'+html.escape(l)+'</a> ' for l,_,f in translations)+'</nav>'
+                links = '<nav aria-label="Languages">'+''.join('<a href="'+html.escape(f[:-3])+'.html">'+html.escape(l)+'</a> ' for l,_,f in available)+'</nav>'
                 rendered = convert(body)
                 (destination/(lang+'.html')).write_text(page(tpl,page_title,links+rendered,'../../',nav.replace('href="','href="../../'),lang),encoding='utf-8')
                 language_links.append('<a href="'+html.escape(slug)+'/'+html.escape(lang)+'.html">'+html.escape(label.strip())+'</a>')
