@@ -1,5 +1,8 @@
 # Optional website. No personal content is published unless this is enabled.
 enabled: false
+# Languages offered by the site, in preferred order.
+languages:
+  - es
 
 articles:
   enabled: true
