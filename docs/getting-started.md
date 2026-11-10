@@ -1,32 +1,31 @@
 # Getting started
 
-Trayector helps you version professional knowledge using Markdown, Git, structured templates, and AI-agent instructions. The **profile** is your own Git repository: it contains your professional facts, not Trayector's site source code.
+Trayector helps version professional knowledge using human-readable Markdown, Git, templates, and AI-agent instructions. The profile is your own repository; it does not contain Trayector's website source code.
 
 ## Create a career repository
 
-Create a new repository from the released Trayector template when available. The template should include `PROFILE.md`, agent entry points, `.trayector/settings/`, the selected release's skills and templates, and optional GitHub Actions caller workflows.
-
-You can start in two ways: supply an existing CV to an AI agent or answer a short, guided interview. The agent should read existing information before asking focused questions. It should ask for the profile language and whether you want to import publications or enable a public site. A first profile should be useful without needing to reconstruct your entire career immediately.
+Create a repository from the released Trayector template when available. You may supply a CV or start a guided conversation. The agent should inspect the information available before asking targeted questions, and should ask whether you want to import external publications, keep original articles, or enable a public site. These are separate decisions.
 
 ## Source of truth
 
-- `PROFILE.md` is the entry point and index, not a Trayector configuration file.
-- `profile/`, `experience/`, `projects/` and `content/` contain structured career records.
-- `cv/` contains derived, tailored Markdown résumés.
-- `.trayector/settings/trayector.yaml` declares the installed Trayector release.
-- `.trayector/versions/<version>/skills/` contains agent procedures.
-- `.trayector/versions/<version>/templates/` contains mandatory record contracts.
+- `PROFILE.md`: canonical navigation entry point
+- `profile/`, `experience/`: professional background and work
+- `projects/`: initiatives the person developed or maintained significantly
+- `contributions/`: work contributed to other initiatives
+- `publications/`: externally hosted/published material, talks, videos, podcasts, or registrations, documented with the original Link
+- `articles/<slug>/README.md`: authored article index, with Summary, Content links to per-language Markdown files, and optional Related
+- `cv/`: derived tailored résumés
+- `.trayector/settings/`: version and site settings
+- `.trayector/versions/<version>/`: installed skills and mandatory templates
 
-The agent must load the appropriate template **before reading, writing, or validating** each record, and it must not invent career facts.
+Agents should read the applicable template before interpreting or editing a record. The contents of `articles/<slug>/<language>.md` are free-form, not subject to a fixed set of headings.
 
-## Configure the optional website
+## Publish the optional website
 
-In `.trayector/settings/site.yaml` enable the site and select the sections to publish. To show a CV, set `cv.enabled: true` and `cv.selected` to an existing Markdown file stem under `cv/`. The official publish workflow renders that Markdown into HTML and a downloadable PDF without an AI API call.
+Set `enabled: true` in `.trayector/settings/site.yaml` to enable publishing. To publish an article, also add its folder name to `articles.include` with the person's approval. An article that is not included remains a repository document but is not exposed by the website. To show a CV, enable the CV section and select an existing `cv/<selected>.md`. The official publish workflow builds the HTML and PDF without AI.
 
-The site is opt-in. Publishing and importing publications are separate choices.
+## Updates
 
-## Version updates
+A manually initiated updater can propose a PR to install a newer tagged release's skills and templates without overwriting career data.
 
-Run the manual updater when you choose to adopt a newer Trayector tag. It opens a reviewable PR that installs the matching skills and templates bundle and aligns the official Actions reference. You may remain on any installed release indefinitely.
-
-See [Agent-assisted creation](ai-assisted-profile.md), [Tailored résumés](tailored-resumes.md), and [Publishing](site-publishing.md).
+See [AI-assisted creation](ai-assisted-profile.md), [Tailored résumés](tailored-resumes.md) and [Publishing](site-publishing.md).
