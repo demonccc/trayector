@@ -69,21 +69,20 @@ Only unresolved questions that materially affect the canonical profile need to b
 
 ## 5. Build canonical knowledge areas
 
-Once the facts are sufficiently clear, create or update the canonical Trayector areas:
+Once facts are clear enough, use the corresponding versioned templates to create or update:
 
-- `profile/` for summary, timeline, capabilities and education;
-- `experience/` for coherent professional periods;
-- `projects/` for personal, open-source, research, lab and freelance work;
-- `deep-dives/` for initiatives that need architecture, constraints and trade-offs;
-- `stories/` for cross-cutting lessons and career narratives;
-- `feedback/` when the profile chooses to preserve recommendations or testimonials;
-- `content/` for canonical professional writing.
+- `profile/` for professional background;
+- `experience/` for professional work contexts;
+- `projects/` for initiatives the person created, developed or maintained significantly;
+- `contributions/` for delimited contributions to other initiatives;
+- `publications/` for external content, participations and registrations, including copyrights, using Description, My Participation, Link and optional Related;
+- `articles/` for authored content stored in Markdown. Each article has one `README.md` index, with Summary, linked language versions under Content and optional Related. Every language file may have entirely free-form content.
 
-Do not force every source item into the profile. Recruiter outreach, automated platform events, duplicated claims and irrelevant historical noise can remain outside the canonical career.
+Do not duplicate an authored article merely because it has an external distribution URL. Do not invent content, ownership or translations. An article is only added to the website's `articles.include` with explicit approval.
 
 ## 6. Connect capabilities to evidence
 
-Capabilities SHOULD be supported by links to real experience, projects, deep dives, stories or content whenever possible.
+Capabilities SHOULD be supported by links to real experience, projects, contributions, publications or articles whenever possible.
 
 Avoid keyword inventories with no inspectable support.
 
@@ -98,9 +97,9 @@ The README SHOULD summarize and link to:
 - current professional summary;
 - major capability areas;
 - career timeline;
-- selected projects and evidence;
+- selected projects, contributions and evidence;
 - feedback, when present;
-- professional content;
+- external publications and authored articles;
 - education and certifications.
 
 It SHOULD NOT explain the Trayector specification in place of presenting the person.
@@ -109,7 +108,7 @@ A committed README can be regenerated as the canonical profile evolves.
 
 ## 8. Keep Trayector metadata separate from the profile view
 
-A profile MAY include a small `TRAYECTOR.md` file that explains which Trayector version it follows and points to the specification.
+An agent should keep implementation details in `.trayector/` rather than adding an unnecessary profile metadata document.
 
 `PROFILE.md` remains the professional navigation entry point. The active Trayector version is declared separately in `.trayector/settings/trayector.yaml`.
 
