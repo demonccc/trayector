@@ -47,7 +47,7 @@ Those can all become **views or consumers** of a Trayector profile.
 
 Trayector separates the career model from the way it is presented.
 
-Canonical career knowledge lives in structured profile documents such as experience, projects, capabilities, stories, deep dives, feedback and content.
+Canonical career knowledge lives in human-readable records for professional background, experiences, projects, contributions, external publications and authored articles. Articles have a README index and unrestricted Markdown bodies in as many languages as the author maintains.
 
 In a personal career repository, `README.md` is the public-facing overview; `PROFILE.md` is the canonical navigation entry point. It can summarize and link to canonical knowledge, and it can be regenerated when the profile changes.
 
@@ -61,7 +61,7 @@ This Trayector **source repository** keeps `skills/` and `templates/` at the roo
 
 Every personal career repository declares one immutable Trayector release in `.trayector/settings/trayector.yaml` using `version: 0.1.0`. A version bundle at `.trayector/versions/<version>/` contains operational **skills** and mandatory **templates**. The agent must use a template as the structural contract when reading, creating or updating any record; templates are not optional examples.
 
-The nine skills are: initialize, profile, experience, projects, publications, contributions, **manage-resumes**, publish and manage-trayector. Agent entry points load the active version and its `skills/index.md`. CVs are derived Markdown under `cv/` and follow `templates/resumes/`.
+The ten skills are: initialize, profile, experience, projects, contributions, publications, articles, **manage-resumes**, publish and manage-trayector. Agent entry points load the active version and its `skills/index.md`. CVs are derived Markdown under `cv/` and follow `templates/resumes/`.
 
 The optional website implementation remains in the central Trayector repository: `site/` HTML/CSS and `scripts/` Markdown renderer and a GitHub Pages reusable workflow pinned to the same release tag. The personal repository keeps only the publishing configuration, professional documents and small GitHub Actions callers. See [Publishing](docs/site-publishing.md) and [Profile Kit](docs/profile-kit.md).
 
@@ -118,7 +118,7 @@ Outcome
 
 You create **your own career repository**. Trayector defines structural conventions; your repository contains your information and owns local configuration and vocabularies.
 
-A typical profile contains `PROFILE.md`, `profile/`, `experience/`, `projects/`, `content/`, `cv/` and `.trayector/` with versioned skills and templates. An AI agent can initialize the profile from a CV or through guided questions; Git expertise is not required from the profile owner.
+A typical profile contains `PROFILE.md`, `profile/`, `experience/`, `projects/`, `contributions/`, `publications/`, `articles/`, `cv/` and `.trayector/` with versioned skills and templates. `publications/` points to external content or registrations; `articles/` stores free-form Markdown content and readable multilingual indexes. The website publishes only articles expressly selected in its settings. An AI agent can initialize the profile from a CV or through guided questions; Git expertise is not required from the profile owner.
 
 See [Getting Started](docs/getting-started.md) for the guided flow.
 
