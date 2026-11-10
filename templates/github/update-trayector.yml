@@ -37,7 +37,7 @@ jobs:
           mkdir -p /tmp/trayector-incoming
           git -C /tmp/trayector-upstream archive "$tag" skills templates | tar -xf - -C /tmp/trayector-incoming
           test -f /tmp/trayector-incoming/skills/index.md
-          test -f /tmp/trayector-incoming/templates/profile.md
+          test -f /tmp/trayector-incoming/templates/profile/template.md
           test -f /tmp/trayector-incoming/templates/resumes/basic.md
           if [ -e "$destination" ]; then
             diff -qr "$destination" /tmp/trayector-incoming || {
