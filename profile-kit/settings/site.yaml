@@ -1,8 +1,10 @@
-# Optional website, built and published by the repository-owned workflow.
+# Optional website. No personal content is published unless this is enabled.
 enabled: false
 
 articles:
   enabled: true
+  # Only explicitly approved article directory names are published.
+  include: []
 
 experience:
   enabled: true
