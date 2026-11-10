@@ -24,8 +24,8 @@ Raw source material is input, not automatically canonical Career as Code content
 An AI building a profile SHOULD first read:
 
 1. `README.md` in the Trayector repository;
-2. `spec/README.md`;
-3. `spec/principles.md`;
+2. `skills/index.md`;
+3. `skills/profile-rules.md`;
 4. `docs/getting-started.md`;
 5. the relevant templates under `templates/`.
 
@@ -111,7 +111,7 @@ A committed README can be regenerated as the canonical profile evolves.
 
 A profile MAY include a small `TRAYECTOR.md` file that explains which Trayector version it follows and points to the specification.
 
-`PROFILE.md` remains the machine-readable entry point and declares `trayector_version`.
+`PROFILE.md` remains the professional navigation entry point. The active Trayector version is declared separately in `.trayector/settings/trayector.yaml`.
 
 This keeps implementation details out of the public-facing profile index while preserving explicit compatibility information.
 
@@ -123,7 +123,7 @@ For each tailored résumé, the AI SHOULD read:
 
 1. the target job description;
 2. the candidate's `PROFILE.md` and relevant canonical profile documents;
-3. the selected résumé template, such as `templates/resume/basic.md`.
+3. the selected résumé template, such as `templates/resumes/basic.md`.
 
 The AI MAY select, reorder, summarize and emphasize supported information according to the role.
 
@@ -136,7 +136,7 @@ See [`tailored-resumes.md`](tailored-resumes.md) for the detailed generation wor
 ```text
 Build a Career as Code profile using Trayector.
 
-First read the Trayector specification, principles, getting-started guide and relevant templates. Then read all career source material I provide.
+First read the active version's skills, common profile rules and mandatory templates. Then read all career source material I provide.
 
 Treat the source material as evidence, not as a schema. Extract before rewriting.
 
@@ -162,7 +162,7 @@ Create a tailored résumé for the job description I provide.
 
 Use my Trayector profile as the only source of professional facts. Start at PROFILE.md and read the relevant canonical profile documents.
 
-Use the selected résumé template as presentation guidance.
+Use the selected résumé template as the mandatory structural contract for reading and writing the derived CV.
 
 Analyze the target role first, then select, prioritize and summarize the parts of my real experience that best match it.
 
