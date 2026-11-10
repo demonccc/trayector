@@ -53,7 +53,7 @@ In a personal career repository, `README.md` is the public-facing overview; `PRO
 
 Trayector implementation metadata belongs in `.trayector/settings/`, not in `PROFILE.md`.
 
-See [Profile Views](spec/profile-views.md).
+See [Profile Kit](docs/profile-kit.md) for canonical records and derived views.
 
 ## Local Trayector release
 
@@ -153,11 +153,11 @@ Trayector is built around a few rules:
 - **One source, many views.** Résumés, websites and social posts can be generated from the same underlying knowledge.
 - **Do not invent evidence.** Unknown or unverified information should remain unknown or unverified.
 
-Read the full set in [`spec/principles.md`](spec/principles.md).
+These principles are reflected in the mandatory templates and the agent rules in [`skills/profile-rules.md`](skills/profile-rules.md).
 
 ## Status
 
-Trayector is currently an early specification (`v0.x`). The information model will evolve as real profiles exercise it.
+Trayector is currently an early implementation (`v0.x`). The information model will evolve as real profiles exercise it.
 
 The initial focus is deliberately simple:
 
@@ -171,7 +171,7 @@ The initial focus is deliberately simple:
 
 Trayector is licensed under the **Apache License 2.0**.
 
-The specification and reference implementation are intentionally open and may be adopted by individuals, companies, platforms and tools under the terms of that license.
+The model and reference implementation are intentionally open and may be adopted by individuals, companies, platforms and tools under the terms of that license.
 
 See [`LICENSE`](LICENSE).
 
@@ -185,8 +185,8 @@ Issues and pull requests are welcome.
 
 ## AI discovery and updates
 
-The canonical profile starts at `PROFILE.md`. Agent entry files (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, and Copilot instructions) all direct agents to `.trayector/settings/trayector.yaml` and the selected `.trayector/skills/<version>/index.md`; local extensions remain in `.trayector/skills/custom/`. Updating Trayector AI installs only a new immutable version directory by PR and does not change the active version or site customizations.
+Agent entry points in a personal career repository read `.trayector/settings/trayector.yaml` and the installed `.trayector/versions/<version>/skills/index.md`. The same release bundle contains mandatory contracts under `.trayector/versions/<version>/templates/`. Updating is optional and proposed through a pull request that installs the new release and aligns the official Actions reference.
 
 ## Publishing implementation
 
-The default HTML/CSS and Markdown renderer live in [`site/`](site/). Profiles call the release-pinned reusable [publish workflow](.github/workflows/publish.yml) using the small caller template at [`templates/github/publish.yml`](templates/github/publish.yml). The reusable workflow checks out its own exact release SHA, ensuring the workflow and static assets match. Publishing is opt-in and the default CV download requires an existing PDF. See [Publishing](docs/site-publishing.md).
+The static website files are in [`site/`](site/), and the renderer is in [`scripts/build-site.py`](scripts/build-site.py). A profile calls the release-pinned reusable [publish workflow](.github/workflows/publish.yml) through [`templates/github/publish.yml`](templates/github/publish.yml). The selected Markdown CV under `cv/` becomes an HTML page and a downloadable PDF, without AI calls during publishing. See [Publishing](docs/site-publishing.md).
