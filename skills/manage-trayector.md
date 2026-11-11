@@ -1,0 +1,3 @@
+# Manage Trayector installation
+
+Read .trayector/settings/trayector.yaml (`version`) and verify corresponding skills/index.md **and** templates/. Confirm the official workflow references the matching immutable `v<version>` tag. Explain settings and optional publication to the owner. On requested update, use the manual update workflow to create a reviewable PR installing an unmodified new version bundle and changing the declared version plus official Actions refs together; never silently migrate old professional records, overwrite user customizations or upgrade without consent. Template changes between releases may require explicit document migration after review. Older version directories remain untouched. Owner can revert to a previous installed release intentionally.

@@ -1,0 +1,5 @@
+# Rules for all Trayector agents
+
+Read `PROFILE.md` and the installed active version's `skills/index.md`. Before interpreting or editing a professional document, load its matching versioned template; templates are contracts for reading and writing, not rigid taxonomies. Flag genuine conflicts rather than inventing new fields.
+
+Canonical records live in `profile/`, `experience/`, `projects/`, `contributions/`, `publications/`, and `articles/`. Projects describe initiatives the person created, developed or maintained meaningfully; contributions document delimited work in another initiative; publications reference external work or registrations; articles contain authored Markdown and may have many language versions. Avoid redundant records for the same fact. CVs and generated website pages are derivatives. Never fabricate roles, dates, metrics, credentials, contribution ownership or evidence. Preserve working links and existing relationships. Do not infer career facts from a target job description. Never publish articles without explicit approval.

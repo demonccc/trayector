@@ -24,8 +24,8 @@ Raw source material is input, not automatically canonical Career as Code content
 An AI building a profile SHOULD first read:
 
 1. `README.md` in the Trayector repository;
-2. `spec/README.md`;
-3. `spec/principles.md`;
+2. `skills/index.md`;
+3. `skills/profile-rules.md`;
 4. `docs/getting-started.md`;
 5. the relevant templates under `templates/`.
 
@@ -69,21 +69,20 @@ Only unresolved questions that materially affect the canonical profile need to b
 
 ## 5. Build canonical knowledge areas
 
-Once the facts are sufficiently clear, create or update the canonical Trayector areas:
+Once facts are clear enough, use the corresponding versioned templates to create or update:
 
-- `profile/` for summary, timeline, capabilities and education;
-- `experience/` for coherent professional periods;
-- `projects/` for personal, open-source, research, lab and freelance work;
-- `deep-dives/` for initiatives that need architecture, constraints and trade-offs;
-- `stories/` for cross-cutting lessons and career narratives;
-- `feedback/` when the profile chooses to preserve recommendations or testimonials;
-- `content/` for canonical professional writing.
+- `profile/` for professional background;
+- `experience/` for professional work contexts;
+- `projects/` for initiatives the person created, developed or maintained significantly;
+- `contributions/` for delimited contributions to other initiatives;
+- `publications/` for external content, participations and registrations, including copyrights, using Description, My Participation, Link and optional Related;
+- `articles/` for authored content stored in Markdown. Each article has one `README.md` index, with Summary, linked language versions under Content and optional Related. Every language file may have entirely free-form content.
 
-Do not force every source item into the profile. Recruiter outreach, automated platform events, duplicated claims and irrelevant historical noise can remain outside the canonical career.
+Do not duplicate an authored article merely because it has an external distribution URL. Do not invent content, ownership or translations. An article is only added to the website's `articles.include` with explicit approval.
 
 ## 6. Connect capabilities to evidence
 
-Capabilities SHOULD be supported by links to real experience, projects, deep dives, stories or content whenever possible.
+Capabilities SHOULD be supported by links to real experience, projects, contributions, publications or articles whenever possible.
 
 Avoid keyword inventories with no inspectable support.
 
@@ -98,9 +97,9 @@ The README SHOULD summarize and link to:
 - current professional summary;
 - major capability areas;
 - career timeline;
-- selected projects and evidence;
+- selected projects, contributions and evidence;
 - feedback, when present;
-- professional content;
+- external publications and authored articles;
 - education and certifications.
 
 It SHOULD NOT explain the Trayector specification in place of presenting the person.
@@ -109,9 +108,9 @@ A committed README can be regenerated as the canonical profile evolves.
 
 ## 8. Keep Trayector metadata separate from the profile view
 
-A profile MAY include a small `TRAYECTOR.md` file that explains which Trayector version it follows and points to the specification.
+An agent should keep implementation details in `.trayector/` rather than adding an unnecessary profile metadata document.
 
-`PROFILE.md` remains the machine-readable entry point and declares `trayector_version`.
+`PROFILE.md` remains the professional navigation entry point. The active Trayector version is declared separately in `.trayector/settings/trayector.yaml`.
 
 This keeps implementation details out of the public-facing profile index while preserving explicit compatibility information.
 
@@ -123,7 +122,7 @@ For each tailored résumé, the AI SHOULD read:
 
 1. the target job description;
 2. the candidate's `PROFILE.md` and relevant canonical profile documents;
-3. the selected résumé template, such as `templates/resume/basic.md`.
+3. the selected résumé template, such as `templates/resumes/basic.md`.
 
 The AI MAY select, reorder, summarize and emphasize supported information according to the role.
 
@@ -136,7 +135,7 @@ See [`tailored-resumes.md`](tailored-resumes.md) for the detailed generation wor
 ```text
 Build a Career as Code profile using Trayector.
 
-First read the Trayector specification, principles, getting-started guide and relevant templates. Then read all career source material I provide.
+First read the active version's skills, common profile rules and mandatory templates. Then read all career source material I provide.
 
 Treat the source material as evidence, not as a schema. Extract before rewriting.
 
@@ -162,7 +161,7 @@ Create a tailored résumé for the job description I provide.
 
 Use my Trayector profile as the only source of professional facts. Start at PROFILE.md and read the relevant canonical profile documents.
 
-Use the selected résumé template as presentation guidance.
+Use the selected résumé template as the mandatory structural contract for reading and writing the derived CV.
 
 Analyze the target role first, then select, prioritize and summarize the parts of my real experience that best match it.
 

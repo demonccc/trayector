@@ -1,254 +1,31 @@
-# Getting Started
+# Getting started
 
-Trayector is designed to be useful before any CLI, service or AI integration exists. The first implementation is deliberately boring: **Markdown, YAML, JSON and Git**.
+Trayector helps version professional knowledge using human-readable Markdown, Git, templates, and AI-agent instructions. The profile is your own repository; it does not contain Trayector's website source code.
 
-The recommended workflow is guided and source-first: collect what already exists, build the canonical profile, resolve only the ambiguities that matter, and generate derived views such as README files and tailored résumés from that canonical knowledge.
+## Create a career repository
 
-## 1. Collect your source material
+Create a repository from the released Trayector template when available. You may supply a CV or start a guided conversation. The agent should inspect the information available before asking targeted questions, and should ask whether you want to import external publications, keep original articles, or enable a public site. These are separate decisions.
 
-Start with whatever already exists:
+## Source of truth
 
-- current and historical CVs;
-- LinkedIn profile information;
-- project notes;
-- public repositories;
-- articles, talks and presentations;
-- recommendations and testimonials;
-- architecture notes;
-- personal notes about work that never fit in a CV.
+- `PROFILE.md`: canonical navigation entry point
+- `profile/`, `experience/`: professional background and work
+- `projects/`: initiatives the person developed or maintained significantly
+- `contributions/`: work contributed to other initiatives
+- `publications/`: externally hosted/published material, talks, videos, podcasts, or registrations, documented with the original Link
+- `articles/<slug>/README.md`: authored article index, with Summary, Content links to per-language Markdown files, and optional Related
+- `cv/`: derived tailored résumés
+- `.trayector/settings/`: version and site settings
+- `.trayector/versions/<version>/`: installed skills and mandatory templates
 
-These sources are inputs. They are not automatically canonical Trayector content and do not need to be committed to the public profile repository.
+Agents should read the applicable template before interpreting or editing a record. The contents of `articles/<slug>/<language>.md` are free-form, not subject to a fixed set of headings.
 
-If you are using AI, read [AI-Assisted Profile Creation](ai-assisted-profile.md) before generating profile files.
+## Publish the optional website
 
-## 2. Create your career repository
+Set `enabled: true` in `.trayector/settings/site.yaml` to enable publishing. To publish an article, also add its folder name to `articles.include` with the person's approval. An article that is not included remains a repository document but is not exposed by the website. To show a CV, enable the CV section and select an existing `cv/<selected>.md`. The official publish workflow builds the HTML and PDF without AI.
 
-Create a repository such as:
+## Updates
 
-```text
-username-career
-my-career
-professional-profile
-```
+A manually initiated updater can propose a PR to install a newer tagged release's skills and templates without overwriting career data.
 
-The repository name is yours. It does not need to contain `trayector`.
-
-## 3. Create a versioned AI setup
-
-```text
-my-career/
-├── README.md
-├── PROFILE.md
-├── AGENTS.md
-├── CLAUDE.md
-├── GEMINI.md
-├── .github/
-│   ├── copilot-instructions.md
-│   └── workflows/
-│       ├── update-trayector.yml
-│       └── publish.yml
-├── .trayector/
-│   ├── ia/
-│   │   └── 0.1.0/
-│   │       ├── index.md
-│   │       ├── profile-rules.md
-│   │       ├── experience.md
-│   │       └── content.md
-│   ├── settings/
-│   │   └── trayector.yaml
-│   └── site/
-├── profile/
-├── experience/
-├── projects/
-└── content/
-```
-
-`PROFILE.md` is the navigation entry point for professional facts. Copy the versioned AI instructions from `profile-kit/skills/0.1.0/` into `.trayector/skills/0.1.0/`. Set `.trayector/settings/trayector.yaml` with `skills.version: 0.1.0`. Install identical agent adapters from `templates/agents/` and the manual updater from `templates/github/update-trayector.yml`. New instruction releases install alongside old versions and are activated explicitly.
-
-## 4. Configure the profile
-
-Profile-owned configuration lives under:
-
-```text
-.trayector/settings/
-```
-
-Each file represents one configurable area. Start only with the sections you actually need.
-
-For example:
-
-`languages.yaml`:
-
-```yaml
-esp: Español
-eng: English
-br: Português do Brasil
-```
-
-`classifications.yaml`:
-
-```yaml
-linkedin-post: Publicación profesional en LinkedIn
-article: Artículo largo o de profundidad
-technical-note: Nota técnica enfocada en un tema concreto
-```
-
-The keys are intentionally owner-defined. A profile can rename, remove or extend them.
-
-## 5. Create the professional entry point
-
-`PROFILE.md` is a Markdown navigation document for the professional profile. It should describe the person and link to relevant career knowledge, without duplicating Trayector's AI instructions or implementation/version metadata.
-
-```markdown
-# Professional Profile
-
-## Identity
-- Name: Alex Example
-- Headline: Engineering Manager
-
-## Career Knowledge
-- [Summary](profile/summary.md)
-- [Timeline](profile/career-timeline.md)
-- [Capabilities](profile/capabilities.md)
-- [Experience](experience/)
-- [Projects](projects/)
-- [Publications](content/)
-```
-
-Agent adapters handle AI instruction discovery independently: they read `.trayector/settings/trayector.yaml` for the active `skills.version` and then load that version's `index.md`.
-
-## 6. Build the canonical profile before the README
-
-Start with the knowledge itself:
-
-1. `profile/summary.md` — who you are now;
-2. `profile/career-timeline.md` — the chronological view;
-3. current and previous major experiences;
-4. capabilities you can actually demonstrate;
-5. projects, deep dives and stories that provide evidence;
-6. education, feedback and content when relevant.
-
-Do not begin by writing a polished repository README. The README is a derived view and is easier to build correctly after the canonical profile exists.
-
-## 8. Document experience, not just employment
-
-Create one experience document for a coherent employment or professional-engagement period.
-
-An experience may include role progression when the organizational context remains continuous. Split it when there are genuinely separate employment periods, clearly different engagements, or a scope change that benefits from its own independent context. Do not create extra documents solely because a title changed.
-
-Use [`../templates/experience-template.md`](../templates/experience-template.md).
-
-## 9. Make contribution explicit
-
-Avoid ambiguous statements such as:
-
-> Migrated the platform to Kubernetes.
-
-Who did what?
-
-Prefer explicit contribution metadata and then explain the contribution in prose.
-
-This lets a reader distinguish between work you personally designed, work you implemented, work you led, and achievements produced by a team you managed.
-
-## 10. Connect capabilities to evidence
-
-Do not infer capability from titles alone.
-
-A capability may be demonstrated by work experience, personal projects, labs, publications, open-source contributions, talks or other relevant work.
-
-Avoid capability lists that are only keyword inventories. Link them to inspectable evidence whenever possible.
-
-## 11. Use deep dives when a bullet is not enough
-
-An experience document should remain navigable. If an initiative needs architecture diagrams, failure modes, constraints and detailed trade-offs, create a deep dive and link to it.
-
-Use [`../templates/case-study-template.md`](../templates/case-study-template.md).
-
-## 12. Treat personal work as first-class evidence
-
-A personal project is not automatically less valuable than paid work.
-
-If it demonstrates real knowledge, document it.
-
-Use [`../templates/project-template.md`](../templates/project-template.md).
-
-## 13. Keep your writing with your career
-
-Trayector treats professional writing as content, without forcing the directory structure to decide whether something is a post, article, note, talk or another owner-defined classification.
-
-Every content item uses the same shape:
-
-```text
-content/
-└── 2026-05-22-t-shape-ia-square-shape/
-    ├── content.esp.md
-    └── assets/
-        └── square-shape-seniority.jpg
-```
-
-The directory carries the date and slug. The filename carries the language key defined in `.trayector/settings/languages.yaml`. Do not repeat information in metadata when it can be derived reliably from the path.
-
-Classification resolves through `.trayector/settings/classifications.yaml`.
-
-Publications, sources and related content should be represented as readable Markdown lists when they are primarily human-facing information.
-
-Use [`../templates/content-template.md`](../templates/content-template.md).
-
-## 14. Build the README as the profile index
-
-Once the canonical profile exists, build `README.md` as the primary human-facing index.
-
-It should present the person, not explain Trayector.
-
-Use [`../templates/readme-template.md`](../templates/readme-template.md).
-
-Trayector implementation details belong in `PROFILE.md`, the optional `TRAYECTOR.md`, and `.trayector/`.
-
-## 15. Generate tailored résumés as derived views
-
-When applying to a role, provide the target job description to the AI or tool and ask it to generate a tailored résumé from the canonical profile.
-
-The generator should:
-
-1. analyze the target role;
-2. map requirements to supported profile evidence;
-3. use a selected résumé template;
-4. emphasize and reorder only real supported information;
-5. validate every substantive claim;
-6. generate the source résumé;
-7. render a PDF from the reviewed source when PDF tooling is available.
-
-Use the local `.trayector/skills/<active-version>/resume-generation.md` instructions inside the profile repository.
-
-Generated application-specific outputs can live under:
-
-```text
-generated/resumes/<target-slug>/
-```
-
-They are views, not canonical career data.
-
-## 16. Version it
-
-Your career evolves. Your profile should too.
-
-Use normal Git workflows. The history itself becomes useful context: when a capability appeared, when a project evolved, and how your thinking changed.
-
-## What Trayector does not require
-
-You do **not** need:
-
-- a public code repository for every claim;
-- source code at all;
-- confidential company information;
-- artificial metrics;
-- a specific job title;
-- a perfect career narrative;
-- a globally fixed list of languages or content classifications;
-- raw source documents to be committed to the public profile.
-
-Evidence can be descriptive while respecting confidentiality. The goal is to make your contribution and reasoning inspectable, not to leak proprietary information.
-
-## Next
-
-Read the [Profile Kit guide](profile-kit.md), the [AI-assisted guide](ai-assisted-profile.md), the [Tailored Résumés guide](tailored-resumes.md), then the [specification overview](../spec/README.md) and [design principles](../spec/principles.md).
+See [AI-assisted creation](ai-assisted-profile.md), [Tailored résumés](tailored-resumes.md) and [Publishing](site-publishing.md).

@@ -1,15 +1,50 @@
-# Versioned Trayector Profile Kit
+# Trayector release layout
 
-The active release is identified only by `.trayector/settings/trayector.yaml`:
+**Trayector source repository** holds the editable implementation:
+
+- `skills/`: agent procedures
+- `templates/content/`: professional document contracts for profile, experience, project, contribution, publication and article indexes
+- `templates/resumes/`: derived CV formats
+- `templates/agents/` and `templates/github/`: entry points and workflow callers
+- `site/`: HTML templates and static assets
+- `scripts/`: site builder
+- `profile-kit/settings/`: profile configuration defaults
+
+A **personal repository** stores professional records and an installed release:
+
+```text
+PROFILE.md
+README.md
+profile/
+experience/
+projects/
+contributions/
+publications/
+articles/
+  career-as-code/
+    README.md
+    es.md
+    en.md
+    assets/
+cv/
+.trayector/
+  settings/
+    trayector.yaml
+    site.yaml
+  versions/
+    0.1.0/
+      skills/
+      templates/
+```
+
+`projects/` describes initiatives created, developed or maintained substantially by the person. `contributions/` describes individual work contributed to other initiatives. `publications/` records external content, public participation and registrations such as copyright. `articles/` contains authored content kept in Markdown, potentially in many languages, with one README index per article. A Markdown article body is completely free-form; the README provides the navigable contract and related links.
+
+The source repository does **not** itself keep the personal `.trayector/versions/` layout. The tagged release supplies a versioned bundle, selected by `.trayector/settings/trayector.yaml`:
 
 ```yaml
 version: 0.1.0
 ```
 
-Each immutable release bundle installs together under `.trayector/versions/<version>/` with `skills/` **and** `templates/`. Agent entry points at root (AGENTS.md, CLAUDE.md, GEMINI.md, .github/copilot-instructions.md) must resolve the version and read `skills/index.md`. Templates are mandatory structural contracts for **understanding, editing and generating** Markdown records; skills define operational procedures. Do not interpret arbitrary Markdown without the matching active template.
+Agents load `PROFILE.md`, the installed matching `skills/index.md`, and the relevant document template before reading or writing career records. The optional updater installs a new skills/templates bundle via a reviewable PR and aligns release-pinned workflows; it does not rewrite personal records.
 
-The manual update workflow downloads the complete `profile-kit/versions/<version>/` from tag `v<version>`, preserves installed old versions and prepares a PR aligning release version and official reusable workflow references. It must not silently rewrite existing professional records after template changes. Custom agent instructions remain user-managed.
-
-CVs are derived Markdown in `cv/`; `manage-resumes.md` generates and maintains them using `templates/resumes/basic.md`. Site publishing selects an existing CV and renders it, without an AI call.
-
-Releases and end-to-end template builds still require testing before describing the installation as production-ready.
+The site renderer and its scripts remain in Trayector. Site publishing is optional, and authored articles are visible only when explicitly listed in `.trayector/settings/site.yaml` under `articles.include`.

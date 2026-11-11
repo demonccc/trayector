@@ -1,19 +1,24 @@
-# Publishing a Trayector profile
+# Publishing a career profile
 
-The official site is implemented in `site/` inside **demonccc/trayector**, not copied to personal profiles. The default site is a reference implementation, not a theme framework.
+The website implementation lives in the central Trayector release, not in the personal repository:
 
-A personal profile contains canonical Markdown and these settings:
+- `site/`: static HTML templates and assets
+- `scripts/build-site.py`: Markdown-to-HTML and selected-CV-to-PDF renderer
+- `.github/workflows/publish.yml`: reusable GitHub Pages workflow
+
+The personal repository keeps career documents, `.trayector/settings/site.yaml`, and a thin workflow pinned to the same immutable Trayector release as `.trayector/settings/trayector.yaml`.
+
+## Configuration
 
 ```yaml
-# .trayector/settings/trayector.yaml
-version: 0.1.0
-```
-
-```yaml
-# .trayector/settings/site.yaml
 enabled: false
+languages:
+  - es
+  - en
 articles:
   enabled: true
+  include:
+    - career-as-code
 experience:
   enabled: true
 cv:
@@ -21,22 +26,23 @@ cv:
   selected: general
 ```
 
-The profile installs `templates/github/publish.yml` as `.github/workflows/publish.yml`. It invokes `demonccc/trayector/.github/workflows/publish.yml@v0.1.0`. This release must exist before the workflow can execute.
+Site publishing is opt-in. **An article is never exposed merely because it exists in Git.** The site builds only article folders explicitly approved in `articles.include`, and only if the site and articles section are enabled. An empty list publishes no articles. Enabling the site does not authorize publication of drafts. Article references in `publications/` do not automatically publish anything.
 
-On each push to main, the workflow:
+## Multilingual article layout
 
-1. Checks out the caller profile.
-2. Checks out **the exact SHA that contains the called reusable workflow**, using `job.workflow_repository` and `job.workflow_sha`. No use of Trayector main or the caller's ref for site assets.
-3. Checks the workflow's tag and the version declared in `.trayector/settings/trayector.yaml`.
-4. If publishing is enabled, renders `PROFILE.md`, experience and content Markdown through the release's static site implementation.
-5. Publishes the clean static output to GitHub Pages.
+```text
+articles/career-as-code/
+  README.md
+  es.md
+  en.md
+  pt-BR.md
+  assets/
+```
 
-The default builder strips unsafe embedded HTML and excludes draft/private articles. The site is intentionally minimal; it does not currently provide rich image handling, semantic content filtering, link rewriting or multilingual navigation. These limitations must be addressed before describing it as production-ready.
+The `languages` list configures which language versions the site offers, in preferred order. Articles may have additional translations; only linked versions whose filename language code is configured in `site.yaml` are rendered. Articles with no matching language version are omitted. This does not translate any content or yet localize the site's shared navigation and professional profile pages.
 
-The default site reads the selected CV from `cv/<selected>.md`, renders a page and a text-based PDF, and never calls an AI. The source Markdown must already be reviewed. The initial PDF renderer is intentionally simple and needs typography and ATS tests.
+The README is a human-readable index, following `templates/content/article.md`. Its `## Content` section links to each language file, for example `- Spanish: [es.md](es.md)`. The renderer reads only the linked files, renders the unrestricted Markdown of each language, copies shared assets, and provides language links. No front matter or mandatory body headings are required. `## Summary` supplies the site index excerpt; `## Related` links professional records. Content files not linked in README are not article versions.
 
-The owner can replace the caller workflow entirely to host elsewhere, use a custom site or create separate publication jobs. No theme/provider interface is imposed.
+`publications/` instead documents content hosted externally (including copyright registrations) through a description, personal participation, original-content `## Link`, and optional `## Related`. It is not the storage location for authored Markdown articles.
 
-A manual `update-trayector.yml` proposes a PR that installs the target version's skills, updates `trayector.yaml`, and changes the official publish workflow reference to the same tag. Nothing updates automatically.
-
-**Implementation status:** the renderer and workflows are implemented in the feature branch but must be tested on a tagged release and a real calling profile before publishing is enabled in the distributed template.
+The selected CV `cv/<selected>.md` is rendered to an HTML page and downloadable PDF without AI calls. Publishing needs testing against a real release before production use.
